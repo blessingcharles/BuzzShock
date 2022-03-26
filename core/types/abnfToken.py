@@ -7,6 +7,9 @@
     3. NEWLINE TOKEN
     4. SPECIAL OPERATORS
     5. GROUPING OPERATORS
+    6. STRING START
+    7. COMMENT
+    8. BUZZSHOCK
 """
 
 
@@ -21,8 +24,8 @@ class ABNFToken:
     STRING_START = "\"\'"
     COMMENT = ";"
     BUZZSHOCK = "`"
-    
-    def __init__(self, type: str, value: str, lin_no, column_no: int, isTerminal: bool = False, info: dict = {}):
+
+    def __init__(self, type: str, value: str, lin_no: int = -1, column_no: int = -1, isTerminal: bool = False, info: dict = {}):
 
         self._type: str = type
         self._value: str = value

@@ -128,6 +128,7 @@ class Tokenizer:
                 """
                     TODO: Quantifiers charaters
                 """
+                pass
             else:
                 """
                     non terminal tokens split it untill newline or space or tab or / or = occurs

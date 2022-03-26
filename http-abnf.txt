@@ -1,6 +1,6 @@
 ; simple http request abnf grammar
 
-start = HTTP-message
+start = HTTP-request
 HTTP-request   =   request-line
                    headers 
                    CRLF

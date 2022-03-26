@@ -1,6 +1,7 @@
 #### BuzzShock
 ![BuzzShock](https://static.wikia.nocookie.net/b-ua/images/1/12/Buzzshock.png)
-*An Text Based Protocol Fuzzer*
+
+An Text Based Protocol Fuzzer
 
 ##### Architecture Flow
 

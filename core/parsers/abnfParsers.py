@@ -1,10 +1,11 @@
 
 from pprint import pprint
 from core.parsers.abnfTokenizer import Tokenizer
+from core.types.abnfToken import ABNFToken, ABNFTokenType
 
 
 class ABNFParser:
-    def __init__(self , source_file : str) -> None:
+    def __init__(self, source_file: str) -> None:
         """ 
             Args:
                 source_file: file path to the ABNF grammar
@@ -13,28 +14,33 @@ class ABNFParser:
         """
         self.src = source_file
         self.abnf_obj = {}
-        self.abnf_keys_idx = []
-        
-    def __find_key_idx(self ,tokens_list):
-        """
-            Find the keys index (ie find previous index of = sign)
-            Args:
-                tokens_list: list of grammar tokens
-            Return:
-                None 
-        """
-        pass
+        self.tokens_count = 0
 
     def parse(self):
         """
             Parse the given ABNF grammar file into python grammar object
+
             Args:
                 None
             Return:
                 None
-        """  
+        """
         tt = Tokenizer(self.src)
         tt.tokenize()
-        pprint(tt.abnf_tokens)
-        pprint(tt.field_seperators_idx)
-    
+        self.tokens_count = len(tt.abnf_tokens)
+
+        for idx in tt.field_seperators_idx:
+            cur_key = tt.abnf_tokens[idx-1]
+            self.abnf_obj[cur_key] = []
+
+            token_vals_idx = idx+1
+            """
+                Untill next key occur collect all the token and map it to the key
+            """
+            while token_vals_idx+1 < self.tokens_count and tt.abnf_tokens[token_vals_idx+1].value not in ABNFToken.DELIMETER:
+                self.abnf_obj[cur_key].append(tt.abnf_tokens[token_vals_idx])
+                token_vals_idx += 1
+
+        nxt_one = self.abnf_obj[ABNFToken(ABNFTokenType.NON_TERMINAL, "start")]
+
+        print(self.abnf_obj[nxt_one[0]])
