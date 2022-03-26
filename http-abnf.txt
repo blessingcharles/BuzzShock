@@ -1,0 +1,6 @@
+start = HTTP-message
+HTTP-message   =   start-line
+                    *( header-field CRLF )
+                    CRLF
+                    [ message-body ]
+start-line     =  request-line / status-line / " \= hello " 
