@@ -1,4 +1,8 @@
 
+from pprint import pprint
+from core.parsers.abnfTokenizer import Tokenizer
+
+
 class ABNFParser:
     def __init__(self , source_file : str) -> None:
         """ 
@@ -29,9 +33,8 @@ class ABNFParser:
             Return:
                 None
         """  
-        with open(self.src , "r") as f:
-            f_inp = f.read()
-            print(f_inp.split())
-
-
+        tt = Tokenizer(self.src)
+        tt.tokenize()
+        pprint(tt.abnf_tokens)
+        pprint(tt.field_seperators_idx)
     

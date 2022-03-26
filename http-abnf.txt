@@ -1,6 +1,22 @@
+; simple http request abnf grammar
+
 start = HTTP-message
-HTTP-message   =   start-line
-                    *( header-field CRLF )
-                    CRLF
-                    [ message-body ]
-start-line     =  request-line / status-line / " \= hello " 
+HTTP-request   =   request-line
+                   headers 
+                   CRLF
+                   message-body
+
+request-line = method SP request-target SP HTTP-version CRLF
+HTTP-version  = HTTP-name "/" DIGIT "." DIGIT
+
+; terminal symbols 
+
+method = "GET"/ "HEAD"/ "POST"/ "PUT"/ "DELETE"/ "CONNECT"/ "OPTIONS"/ "TRACE"/ "PATCH"
+SP = " "
+DIGIT = "0" / "1" / "2" / "3" / "4" / "5" / "6" / "7" / "8" / "9"
+HTTP-name = "HTTP" / "%x48.54.54.50"
+CRLF = "\r\n"
+
+; my input
+headers = "Host: __HOST__\r\nConnection:close\r\nX-UNIQUE-ID: __UNIQUE_ID__\r\n"
+message-body = `RandomText`  ; buzz shock random text inputter
