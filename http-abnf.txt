@@ -8,6 +8,7 @@ HTTP-request   =   request-line
 
 request-line = method SP request-target SP HTTP-version CRLF
 HTTP-version  = HTTP-name "/" DIGIT "." DIGIT
+request-target = "__REQUEST_TARGET"
 
 ; terminal symbols 
 

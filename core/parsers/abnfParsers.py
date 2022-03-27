@@ -1,8 +1,8 @@
 
+from collections import deque
 from pprint import pprint
 from core.parsers.abnfTokenizer import Tokenizer
-from core.types.abnfToken import ABNFToken, ABNFTokenType
-
+from core.types.abnfToken import ABNFToken, ABNFTokenDict, ABNFTokenType
 
 class ABNFParser:
     def __init__(self, source_file: str) -> None:
@@ -13,8 +13,12 @@ class ABNFParser:
                 ABNF parser object
         """
         self.src = source_file
-        self.abnf_obj = {}
+        self.abnf_obj: ABNFTokenDict = {}
         self.tokens_count = 0
+        self.root: ABNFToken = None
+        self.terminal_nodes = []
+        self.nonterminal_nodes = []
+        self.shocking_nodes = []
 
     def parse(self):
         """
@@ -28,6 +32,7 @@ class ABNFParser:
         tt = Tokenizer(self.src)
         tt.tokenize()
         self.tokens_count = len(tt.abnf_tokens)
+       
 
         for idx in tt.field_seperators_idx:
             cur_key = tt.abnf_tokens[idx-1]
@@ -40,3 +45,38 @@ class ABNFParser:
             while token_vals_idx+1 < self.tokens_count and tt.abnf_tokens[token_vals_idx+1].value not in ABNFToken.DELIMETER:
                 self.abnf_obj[cur_key].append(tt.abnf_tokens[token_vals_idx])
                 token_vals_idx += 1
+
+            if token_vals_idx+1 == self.tokens_count:
+                # last token
+                self.abnf_obj[cur_key].append(tt.abnf_tokens[token_vals_idx])
+
+        # nxt_one = self.abnf_obj[ABNFToken(ABNFTokenType.NON_TERMINAL, "start")]
+
+        # Build an AST tree with the abnf object
+
+        self.root = ABNFToken(ABNFTokenType.NON_TERMINAL, "start")
+        deq = deque()
+        self.nonterminal_nodes.append(self.root)
+
+        deq.append(self.root)
+        while deq:
+            cur_node = deq.pop()
+            # explore its expansion nodes and add it to the deque
+            for expansion_node in self.abnf_obj[cur_node]:
+
+                cur_node.children.append(expansion_node)
+
+                if self.__is_already_visited(expansion_node):
+                    continue
+
+                if expansion_node.isTerminal:
+                    self.terminal_nodes.append(expansion_node)
+                elif expansion_node.type is ABNFTokenType.NON_TERMINAL:
+                    deq.append(expansion_node)
+                    self.nonterminal_nodes.append(expansion_node)
+                elif expansion_node.type is ABNFTokenType.BUZZSHOCK:
+                    # append its parent node
+                    self.shocking_nodes.append(cur_node)
+
+    def __is_already_visited(self, node: ABNFToken):
+        return node in self.terminal_nodes or node in self.nonterminal_nodes or node in self.shocking_nodes

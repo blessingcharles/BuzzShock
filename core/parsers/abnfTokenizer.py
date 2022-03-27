@@ -58,7 +58,7 @@ class Tokenizer:
         comment_val = ""
 
         self.step_ahead()
-        while self.cur_char not in ABNFToken.NEWLINE_TOKEN:
+        while self.cur_char is not None and self.cur_char not in ABNFToken.NEWLINE_TOKEN:
             comment_val += self.cur_char
             self.step_ahead()
         

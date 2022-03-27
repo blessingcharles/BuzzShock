@@ -13,6 +13,11 @@
 """
 
 
+from tokenize import Token
+from typing import List
+import typing
+
+
 class ABNFToken:
 
     SPACE_TOKEN = " \t"
@@ -26,14 +31,19 @@ class ABNFToken:
     BUZZSHOCK = "`"
 
     def __init__(self, type: str, value: str, lin_no: int = -1, column_no: int = -1, isTerminal: bool = False, info: dict = {}):
-
+        self._id: str = f"{type}-{value}"
         self._type: str = type
         self._value: str = value
 
         self.lin_no: int = lin_no
         self.column_no: int = column_no
         self.info: dict = info
+        self.children: List[ABNFToken] = []
         self.isTerminal: bool = isTerminal
+
+    @property
+    def id(self):
+        return self._id
 
     @property
     def type(self):
@@ -75,3 +85,5 @@ class ABNFTokenType:
     SEPERATOR = "seperator"
     COMMENT = "abnf comments"
     BUZZSHOCK = "buzz shock"
+
+ABNFTokenDict = typing.Dict[ABNFToken , List[ABNFToken]]
