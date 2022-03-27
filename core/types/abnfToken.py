@@ -33,7 +33,7 @@ class ABNFToken:
     def __init__(self, type: str, value: str, lin_no: int = -1, column_no: int = -1, isTerminal: bool = False, info: dict = {}):
         self._id: str = f"{type}-{value}"
         self._type: str = type
-        self._value: str = value
+        self.value: str = value
 
         self.lin_no: int = lin_no
         self.column_no: int = column_no
@@ -49,18 +49,17 @@ class ABNFToken:
     def type(self):
         return self._type
 
-    @property
-    def value(self):
-        return self._value
-
     def __hash__(self) -> int:
-        return hash((self._type, self._value))
+        return hash((self._type , self.value))
+
+    def __len__(self) -> int:
+        return len(self.value)
 
     def __eq__(self, __o: object) -> bool:
         if not isinstance(__o, ABNFToken):
             return False
 
-        return self._type == __o._type and self._value == __o._value
+        return self._type == __o._type and self.value == __o.value
 
     def __repr__(self) -> str:
 

@@ -4,6 +4,7 @@ from pprint import pprint
 from core.parsers.abnfTokenizer import Tokenizer
 from core.types.abnfToken import ABNFToken, ABNFTokenDict, ABNFTokenType
 
+
 class ABNFParser:
     def __init__(self, source_file: str) -> None:
         """ 
@@ -32,7 +33,6 @@ class ABNFParser:
         tt = Tokenizer(self.src)
         tt.tokenize()
         self.tokens_count = len(tt.abnf_tokens)
-       
 
         for idx in tt.field_seperators_idx:
             cur_key = tt.abnf_tokens[idx-1]
@@ -80,3 +80,22 @@ class ABNFParser:
 
     def __is_already_visited(self, node: ABNFToken):
         return node in self.terminal_nodes or node in self.nonterminal_nodes or node in self.shocking_nodes
+
+    def print_tree(self, rootNode):
+
+        d = deque()
+        d.append(rootNode)
+
+        alread_visited = []
+        alread_visited.append(rootNode)
+
+        while d:
+            cur_node = d.pop()
+            print("[+] Exploring -------> ", cur_node)
+
+            for neigh_node in cur_node.children:
+                if neigh_node not in alread_visited:
+                    print(neigh_node)
+                    alread_visited.append(neigh_node)
+                    d.append(neigh_node)
+            print("-------------------------------")

@@ -14,40 +14,45 @@ class Mutator:
         self.verbose = verbose
 
     def charInsert(self, node: ABNFToken , pref_mutants : List[any] = None):
-        
+
         pref_mutants = pref_mutants or basic.ASCII
 
-        cur_val = node.children[0]
+        cur_val = node.children[0].value
         val_len = len(cur_val)
         if not cur_val:
             return
         mutant_point = random.randint(0,val_len-1)
         shocker = random.choice(pref_mutants)
-
-        node.children[0] = cur_val[:mutant_point] + shocker + cur_val[mutant_point:]
+        node.children[0].value = cur_val[:mutant_point] + shocker + cur_val[mutant_point:]
+        msg = f"[+]insert point mutation :  mutating {cur_val} to {node.children[0].value}"
+        self.mutations_info.append(msg)
 
     def charDelete(self, node: ABNFToken):
 
-        cur_val = node.children[0]
+        cur_val = node.children[0].value
         val_len = len(cur_val)
         if not cur_val:
             return
         mutant_point = random.randint(0,val_len-1)
 
-        node.children[0] = cur_val[:mutant_point] + cur_val[mutant_point+1:]
+        node.children[0].value = cur_val[:mutant_point] + cur_val[mutant_point+1:]
+        msg = f"[+]delete point mutation :  mutating {cur_val} to {node.children[0].value}"
+        self.mutations_info.append(msg)
 
     def charReplace(self, node: ABNFToken  , pref_mutants : List[any] = None):
 
         pref_mutants = pref_mutants or basic.ASCII
 
-        cur_val = node.children[0]
+        cur_val = node.children[0].value
         val_len = len(cur_val)
         if not cur_val:
             return
         mutant_point = random.randint(0,val_len-1)
         shocker = random.choice(pref_mutants)
 
-        node.children[0] = cur_val[:mutant_point] + cur_val[mutant_point+1:]
+        node.children[0].value = cur_val[:mutant_point] + cur_val[mutant_point+1:]
+        msg = f"[+]delete point mutation :  mutating {cur_val} to {node.children[0].value}"
+        self.mutations_info.append(msg)
 
     def nodeInsert(self, node: ABNFToken):
         pass
