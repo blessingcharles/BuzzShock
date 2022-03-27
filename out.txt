@@ -38,4 +38,4 @@
                                                   { type : non terminal , value : headers },
                                                   { type : non terminal , value : CRLF },
                                                   { type : non terminal , value : message-body }],
- { type : non terminal , value : start }: [{ type : non terminal , value : HTTP-message }]}
+ { type : non terminal , value : start }: [{ type : non terminal , value : HTTP-request }]}

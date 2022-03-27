@@ -40,7 +40,3 @@ class ABNFParser:
             while token_vals_idx+1 < self.tokens_count and tt.abnf_tokens[token_vals_idx+1].value not in ABNFToken.DELIMETER:
                 self.abnf_obj[cur_key].append(tt.abnf_tokens[token_vals_idx])
                 token_vals_idx += 1
-
-        nxt_one = self.abnf_obj[ABNFToken(ABNFTokenType.NON_TERMINAL, "start")]
-
-        print(self.abnf_obj[nxt_one[0]])
