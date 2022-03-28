@@ -1,7 +1,6 @@
 from flask import request
 from core.types.abnfToken import ABNFToken
-from core.types.httpBuzzTokens import DefaultGadgets, MandatoryGadgetTokens , GadgetTokens
-
+from core.types.httpBuzzTokens import DefaultGadgets, MandatoryGadgetTokens, GadgetTokens
 
 class HttpRequestPrototype:
     def __init__(self, gadgets: None, method: str = "GET", request_target: str = "/", http_version: str = "1.1") -> None:
