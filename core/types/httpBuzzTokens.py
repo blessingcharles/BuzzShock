@@ -13,9 +13,23 @@ class CustomTokens:
 
 # common token values
 
+
 standarBody = {
     "cl-body": {
         "value": "buzzshock",
         "headers": "Content-Length: 9",
     },
+}
+
+# used in httpRequestPrototype
+class GadgetTokens:
+    __SHOCKER__ = "__SHOCKER__"
+    __SP__ = "__SP__"
+    __CRLF__ = "__CRLF__"
+    
+MandatoryGadgetTokens = ["__SHOCKER__", "__SP__", "__CRLF__"]
+DefaultGadgets = {
+    "__SHOCKER__" :  "",
+    "__SP__"      :  " ",
+    "__CRLF__"    :  "\r\n",
 }

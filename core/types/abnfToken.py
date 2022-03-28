@@ -29,7 +29,8 @@ class ABNFToken:
     STRING_START = "\"\'"
     COMMENT = ";"
     BUZZSHOCK = "`"
-
+    CRLF = "\r\n"
+    
     def __init__(self, type: str, value: str, lin_no: int = -1, column_no: int = -1, isTerminal: bool = False, info: dict = {}):
         self._id: str = f"{type}-{value}"
         self._type: str = type
