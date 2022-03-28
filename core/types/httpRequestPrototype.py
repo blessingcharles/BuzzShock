@@ -39,5 +39,5 @@ class HttpRequestPrototype:
 
         for g_key, g_value in self.gadgets.items():
             request = request.replace(g_key, g_value)
-
+    
         return request
