@@ -8,7 +8,7 @@ from parso import parse
 from core.types import mutationTypes
 from core.mutators.mutator import Mutator
 from core.types.abnfToken import ABNFToken
-from core.types.httpBuzzTokens import CustomTokens
+from core.types.httpBuzzTokens import CustomTokens, standarBody
 
 
 class HttpMutator(Mutator):
@@ -17,7 +17,7 @@ class HttpMutator(Mutator):
 
         super().__init__(root, non_terminals, min_count, max_count, random_seed)
 
-        random.seed(random_seed)
+        # random.seed(random_seed)
         self.url = url
         self.request = b""
         self.nodes_to_mutate = nodes_to_mutate
@@ -89,9 +89,21 @@ class HttpMutator(Mutator):
 
         # if __RANDOM_TEXT__ presents shock the request with random with CL
         if CustomTokens.__RANDOM_TEXT__ in self.request:
+            # TODO : random-text with content-length header
             pass
 
-    
+        if CustomTokens.__STANDARD_BODY__ in self.request:
+            cl_body = standarBody['cl-body']
+            self.request = self.request.replace(
+                CustomTokens.__STANDARD_BODY__, cl_body["value"]
+            )
+            self.__insertCustomHeaders(cl_body["headers"])
+
+    def __insertCustomHeaders(self, header_val: str):
+        self.request = self.request.replace(
+            CustomTokens.__HEADERS_CRLF__, "\r\n" +
+            header_val + CustomTokens.__HEADERS_CRLF__
+        )
 
     def __manipulateTerminal(self, cur_node: ABNFToken):
         """
