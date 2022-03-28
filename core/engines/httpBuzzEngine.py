@@ -1,6 +1,7 @@
 import os
 import glob
 from pprint import pprint
+from time import sleep
 from core.engines.shockerSocket import ShockerSocket
 
 
@@ -34,8 +35,23 @@ class HttpBuzzEngine:
         return response
 
     def launchFromDb(self, db_path: str = "db/http"):
-        
-        possible_requests_path = [y for x in os.walk(
+
+        possible_request_paths = [y for x in os.walk(
             db_path) for y in glob.glob(os.path.join(x[0], '*.req'))]
-        
-        pprint(possible_requests_path)
+
+        if self.reuse_socket:
+            cur_sock = self.sock
+
+        for path in possible_request_paths:
+            print(f"\n------ {path} ---------\n")
+            with open(path, "r") as f:
+                payload = f.read()
+                if not self.reuse_socket:
+                    cur_sock = ShockerSocket(
+                        self.host, self.port, self.timeout, self.buffsize, self.is_ssl)
+                    cur_sock.plug()
+                pprint(payload)
+                cur_sock.send(payload)
+                print("\n----Response---------")
+                print(cur_sock.recv())
+                sleep(1)
