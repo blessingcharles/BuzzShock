@@ -50,8 +50,6 @@ class ABNFParser:
                 # last token
                 self.abnf_obj[cur_key].append(tt.abnf_tokens[token_vals_idx])
 
-        # nxt_one = self.abnf_obj[ABNFToken(ABNFTokenType.NON_TERMINAL, "start")]
-
         # Build an AST tree with the abnf object
 
         self.root = ABNFToken(ABNFTokenType.NON_TERMINAL, "start")
@@ -66,8 +64,8 @@ class ABNFParser:
 
                 cur_node.children.append(expansion_node)
 
-                if self.__is_already_visited(expansion_node):
-                    continue
+                # if self.__is_already_visited(expansion_node):
+                #     continue
 
                 if expansion_node.isTerminal:
                     self.terminal_nodes.append(expansion_node)
@@ -78,10 +76,18 @@ class ABNFParser:
                     # append its parent node
                     self.shocking_nodes.append(cur_node)
 
+    def getChildren(self , nodeVal : str):
+        
+        for node in self.abnf_obj:
+            if node.value == nodeVal:
+                return self.abnf_obj[node]
+
+        return None
+
     def __is_already_visited(self, node: ABNFToken):
         return node in self.terminal_nodes or node in self.nonterminal_nodes or node in self.shocking_nodes
 
-    def print_tree(self, rootNode):
+    def printTree(self, rootNode):
 
         d = deque()
         d.append(rootNode)
@@ -94,7 +100,7 @@ class ABNFParser:
             print("[+] Exploring -------> ", cur_node)
 
             for neigh_node in cur_node.children:
-                if neigh_node not in alread_visited:
+                # if neigh_node not in alread_visited:
                     print(neigh_node)
                     alread_visited.append(neigh_node)
                     d.append(neigh_node)

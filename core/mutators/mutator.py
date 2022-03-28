@@ -54,11 +54,11 @@ class Mutator:
         msg = f"[+]delete point mutation :  mutating {cur_val} to {node.children[0].value}"
         self.mutations_info.append(msg)
 
-    def nodeInsert(self, node: ABNFToken):
+    def nodeInsert(self, node: ABNFToken , mutant_genes : List[str]):
         pass
 
-    def nodeDelete(self, node: ABNFToken):
+    def nodeDelete(self, node: ABNFToken ,  mutant_genes : List[str] ):
         pass
 
-    def nodeReplace(self, node: ABNFToken):
+    def nodeReplace(self, node: ABNFToken ,  mutant_genes : List[str]):
         pass

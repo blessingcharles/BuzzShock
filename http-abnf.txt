@@ -1,5 +1,10 @@
 ; simple http request abnf grammar
 
+; -------------- Mandatory Fields ------------------------------------------
+; __URL__ = http://example.com/test?q=f   (mandatory field it will used to fill __HOST__ and __REQUEST_TARGET__)
+; __BUZZ_ID__ (buzzshock will insert a random id to know it from another requests)
+; -------------------------------------------------------------------------
+
 start = HTTP-request
 HTTP-request   =   request-line
                    headers 
@@ -8,16 +13,18 @@ HTTP-request   =   request-line
 
 request-line = method SP request-target SP HTTP-version CRLF
 HTTP-version  = HTTP-name "/" DIGIT "." DIGIT
-request-target = "__REQUEST_TARGET"
+request-target = "__REQUEST_TARGET__"
 
 ; terminal symbols 
 
 method = "GET"/ "HEAD"/ "POST"/ "PUT"/ "DELETE"/ "CONNECT"/ "OPTIONS"/ "TRACE"/ "PATCH"
 SP = " "
-DIGIT = "0" / "1" / "2" / "3" / "4" / "5" / "6" / "7" / "8" / "9"
+DIGIT = "0" / "1" 
 HTTP-name = "HTTP" / "%x48.54.54.50"
 CRLF = "\r\n"
 
 ; my input
-headers = "Host: __HOST__\r\nConnection:close\r\nX-UNIQUE-ID: __UNIQUE_ID__\r\n"
-message-body = `RandomText`  ; buzz shock random text inputter
+
+headers = "Host: __HOST__\r\nConnection: close\r\nX-UNIQUE-ID: __BUZZ_ID__\r\n"
+message-body = "__RANDOM_TEXT__"                     ; buzz shock random text inputter
+__URL__ = "http://example.com/foo/bar?q=1"
