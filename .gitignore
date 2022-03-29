@@ -1,5 +1,6 @@
 # Project-Specific
 test.py
+.internals/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
