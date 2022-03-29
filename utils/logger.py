@@ -10,7 +10,7 @@ class Logger:
         self.is_color = is_color
         self.ansi_chars = re.compile(r'\x1B[@-_][0-?]*[ -/]*[@-~]')
         if filename:
-            self.filehandler = open(filename , "r")
+            self.filehandler = open(filename , "w")
 
     def log(self , msg : str , symbol : str = "+"):
         plaintext = self.ansi_chars.sub('', msg)

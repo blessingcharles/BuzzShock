@@ -1,12 +1,11 @@
 from pprint import pprint
 from urllib.parse import ParseResult, urlparse
 
-from pyrsistent import mutant
 
 from core.types.httpRequestPrototype import HttpRequestPrototype
 
 
-class HttpTeCl:
+class HttpTeClPlugin:
 
     def __init__(self, url, gadget_dict: dict = None, verbose: bool = False) -> None:
         self.url = url
