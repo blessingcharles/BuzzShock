@@ -17,14 +17,14 @@ class BytesIOSocket:
     def makefile(self, mode):
         return self.handle
 
+    @classmethod
+    def response_from_bytes(data):
+        sock = BytesIOSocket(data)
 
-def response_from_bytes(data):
-    sock = BytesIOSocket(data)
+        response = HTTPResponse(sock)
+        response.begin()
 
-    response = HTTPResponse(sock)
-    response.begin()
-
-    return urllib3.HTTPResponse.from_httplib(response)
+        return urllib3.HTTPResponse.from_httplib(response)
 
 
 class HttpBuzzEngine:
@@ -77,7 +77,7 @@ class HttpBuzzEngine:
                         cur_sock.plug()
                     cur_sock.send(payload)
                     raw_response_obj = cur_sock.recv()
-                    response = response_from_bytes(raw_response_obj)
+                    response = BytesIOSocket.response_from_bytes(raw_response_obj)
                     
                     if response.status < 400:
                         results[path] = f"Request\n\n{payload}\nResponse\n\n{response.getheaders()}\n\n{response.msg}"
