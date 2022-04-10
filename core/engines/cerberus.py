@@ -1,6 +1,9 @@
 import importlib
 import pkgutil
 from pprint import pprint
+from typing import List
+
+from core.engines.coreEngine import CoreEngine
 
 discovered_engines = {
     name: importlib.import_module(f"core.engines.{name}") for finder, name, ispkg in pkgutil.iter_modules(["core/engines"])
@@ -12,9 +15,12 @@ discovered_plugins = {
     if name.endswith("Plugin")
 }
 
-class Cerberus:
-    def __init__(self) -> None:
+class Cerberus(CoreEngine):
+    def __init__(self ,protocol : str ,config_obj , engines_list : list , plugins_list = []) -> None:
         """
             Heart of the Tool
         """
-        pass
+        self.protocol = protocol
+        self.engine_list = engines_list
+        self.plugins_list = plugins_list
+

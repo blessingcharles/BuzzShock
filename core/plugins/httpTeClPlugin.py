@@ -20,6 +20,8 @@ class HttpTeClPlugin:
         self.__doublePointMutation()
         self.__xInsertionPointMutation()
         
+        return self.mutants_list
+
     def httpTemplate(self, tecl_name: str, tecl_value: str, http_body: str = "0\r\n\r\nX") -> HttpRequestPrototype:
 
         mutant = HttpRequestPrototype(self.gadget_dict)
