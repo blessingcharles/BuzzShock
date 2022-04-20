@@ -15,12 +15,35 @@ discovered_plugins = {
     if name.endswith("Plugin")
 }
 
+
 class Cerberus(CoreEngine):
-    def __init__(self ,protocol : str ,config_obj , engines_list : list , plugins_list = []) -> None:
-        """
-            Heart of the Tool
-        """
+    def __init__(self, protocol: str, host: str, port: int,endpoint: str = "",
+                 engines_list: list = [], plugins_list=[], gadgets_dict: dict = None,
+                 verbose: bool = False, timeout: int = 5, buffsize: int = 8192, reuse_socket: bool = False, is_ssl: bool = False,
+                 sleepingtime: int = 0.5, log_file: str = None) -> None:
+        
+        super().__init__(host, port , timeout, buffsize, reuse_socket, is_ssl, sleepingtime, log_file)
+
         self.protocol = protocol
+        self.endpoint = endpoint
         self.engine_list = engines_list
         self.plugins_list = plugins_list
+        self.gadget_dict = gadgets_dict
+        self.verbose = verbose
+
+    def run(self):
+        # run the given plugins
+        print(self.plugins_list)
+        for plugin_name in self.plugins_list:
+
+            print("Running Plugin : ", plugin_name)
+            
+            plugin_module = discovered_plugins[plugin_name]
+            plugin_class = getattr(plugin_module , plugin_name) 
+            plugin = plugin_class(self.endpoint, self.gadget_dict, self.verbose)
+            payload_set = plugin.generate()
+
+            for key, value in payload_set.items():
+                result = self.launchCustomPayload(value)
+                print(result)
 

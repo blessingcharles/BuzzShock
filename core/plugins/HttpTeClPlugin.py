@@ -7,9 +7,9 @@ from core.types.httpRequestPrototype import HttpRequestPrototype
 
 class HttpTeClPlugin:
 
-    def __init__(self, url, gadget_dict: dict = None, verbose: bool = False) -> None:
-        self.url = url
-        self.host, self.port, self.netloc, self.uri = self.urlParser(url)
+    def __init__(self, endpoint : str = "", gadget_dict: dict = None, verbose: bool = False) -> None:
+        self.url = endpoint
+        self.host, self.port, self.netloc, self.uri = self.urlParser(endpoint)
         self.gadget_dict: dict[str, str] = gadget_dict
         self.mutants_list: dict[str, HttpRequestPrototype] = {}
         self.verbose = verbose

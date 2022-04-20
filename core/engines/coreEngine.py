@@ -1,6 +1,6 @@
-from logging import Logger
-from core.engines.shockerSocket import ShockerSocket
 
+from core.engines.shockerSocket import ShockerSocket
+from utils.logger import Logger
 
 class CoreEngine:
     def __init__(self, host: str, port: int, timeout: int = 5, buffsize: int = 8192,
