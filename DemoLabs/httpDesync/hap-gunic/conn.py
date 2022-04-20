@@ -1,6 +1,10 @@
 
+from io import BytesIO
 import socket
 import ssl
+from http.client import HTTPResponse
+
+import urllib3
 
 
 class ShockerSocket:
@@ -49,3 +53,19 @@ class ShockerSocket:
             self._sslsock.close()
         else:
             self._sock.close()
+
+class BytesIOSocket:
+    def __init__(self, content):
+        self.handle = BytesIO(content)
+
+    def makefile(self, mode):
+        return self.handle
+
+    @classmethod
+    def response_from_bytes(cls, data):
+        sock = BytesIOSocket(data)
+
+        response = HTTPResponse(sock)
+        response.begin()
+
+        return urllib3.HTTPResponse.from_httplib(response)

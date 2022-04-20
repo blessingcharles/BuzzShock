@@ -8,7 +8,7 @@ services:
     expose:
       - 80
     ports:
-      - "9013:80"
+      - "8081:80"
     depends_on:
       - gunicorn
   gunicorn:
@@ -17,4 +17,4 @@ services:
       context: .
       dockerfile: gunicorn.dockerfile
     ports:
-        - "9014:6767"
+        - "8082:6767"
