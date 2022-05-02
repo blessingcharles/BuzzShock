@@ -4,6 +4,7 @@ from urllib.parse import urlparse
 
 from core.engines.cerberus import Cerberus
 from utils.args import buzzShockArgs
+from utils.logger import Bzlogger
 from utils.utils import dir_create
 
 
@@ -32,6 +33,9 @@ if __name__ == "__main__":
 
     output_dir = os.getcwd() + "/" + output_dir
 
+    Bzlogger.info("Output directory : " + output_dir)
+    Bzlogger.info("Worker Thread : " + str(threads))
+    
     dir_create(output_dir)
     cb = Cerberus(protocol=protocol, host=host, port=port, output_dir=output_dir, endpoint=endpoint,
                   engines_list=engines_list, plugins_list=plugins_list, threads=threads, verbose=verbose)
