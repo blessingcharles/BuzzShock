@@ -33,12 +33,31 @@ class HttpBuzzEngine(CoreEngine):
     def __init__(self, host: str, port: int, timeout: int = 5, buffsize: int = 8192,
                  reuse_socket: bool = False, is_ssl: bool = False, sleepingtime: int = 0.5,
                  log_file: str = None) -> None:
+        """
+            Http text based protocol fuzz engine
+
+            Attributes
+            -------------
+            host : str
+            port : int
+            timeout : int
+            buffsize : int
+            reuse_socket : bool
+            is_ssl : bool
+            sleepingtime : int
+            log_file : str 
+
+            Methods
+            ------------
+            launch_from_db
+                launch http payloads from the given path 
+        """
 
         super().__init__(host=host, port=port, reuse_socket=reuse_socket, is_ssl=is_ssl,
                          timeout=timeout, buffsize=buffsize, sleepingtime=sleepingtime , log_file=log_file)
 
 
-    def launchFromDb(self, db_path: str = "db/http", testing_server_name: str = None) -> Dict[str, str]:
+    def launch_from_db(self, db_path: str = "db/http", testing_server_name: str = None) -> Dict[str, str]:
 
         self.results = {}
         extension = "req"
@@ -62,7 +81,7 @@ class HttpBuzzEngine(CoreEngine):
                         self.logger.log("-"*100)
                         self.logger.log("Success : {path}")
                         self.logger.log(
-                            f"Response\n\n{self.__extractHeaders(response.getheaders())}\n\n{response.data}")
+                            f"Response\n\n{self.__extractHeaders(response.getheaders())}\n{response.data}")
 
                     sleep(self.sleepingtime)
             except Exception as exp:

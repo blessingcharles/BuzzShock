@@ -23,13 +23,14 @@ class HttpRequestPrototype:
             -------------
             addHeader(key , val)
                 add headers to the request object
-                
+
         """
         self.header = ""
         self.request_line = f"{method}{GadgetTokens.__SP__}{request_target}{GadgetTokens.__SP__}HTTP{GadgetTokens.__SHOCKER__}/{http_version}{GadgetTokens.__CRLF__}"
         self.body = None
         self.gadgets = gadgets or DefaultGadgets
         self.add_default_cl = add_default_cl
+        self.first_time = True
 
     def addHeader(self, key : str , val : str ):
         """
@@ -51,7 +52,8 @@ class HttpRequestPrototype:
                 raise AttributeError(f"Mandatory Gadget {g} not present")
 
         request: str = ""
-        if self.body and self.add_default_cl:
+        if self.body and self.add_default_cl and self.first_time:
+            self.first_time = False
             self.addHeader("Content-Length", str(len(self.body)))
 
         request += self.request_line + self.header + GadgetTokens.__CRLF__ + self.body

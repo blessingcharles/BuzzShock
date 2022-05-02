@@ -2,10 +2,31 @@
 from core.engines.shockerSocket import ShockerSocket
 from utils.logger import Logger
 
+
 class CoreEngine:
     def __init__(self, host: str, port: int, timeout: int = 5, buffsize: int = 8192,
                  reuse_socket: bool = False, is_ssl: bool = False, sleepingtime: int = 0.5,
                  log_file: str = None) -> None:
+        """
+            Steering to run various plugins and engines to fuzz protocols
+
+            Attributes
+            -------------
+            host : str
+            port : int
+            timeout : int
+            buffsize : int
+            reuse_socket : bool
+            is_ssl : bool
+            sleepingtime : int
+            log_file : str
+
+            Methods
+            ------------
+            launchCustomPayload:
+                send the payload into the connected socket and return bytes response
+
+        """
 
         self.host = host
         self.port = port
@@ -25,7 +46,7 @@ class CoreEngine:
         else:
             self.logger = Logger()
 
-    def launchCustomPayload(self, payload_body : str):
+    def launchCustomPayload(self, payload_body: str):
 
         # send the payload body and return the response from the servers
         if self.reuse_socket:
@@ -35,6 +56,8 @@ class CoreEngine:
                 self.host, self.port, self.timeout, self.buffsize, self.is_ssl)
             cur_sock.plug()
 
+        print("bytes : ", end="")
+        print(payload_body.__str__().encode('utf-8'))
         cur_sock.send(payload_body.__str__().encode('utf-8'))
         response = cur_sock.recv()
         return response

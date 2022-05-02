@@ -30,9 +30,9 @@ class HttpTeClPlugin:
 
         self.__normal_req()
         # Random shocking characters insertion
-        # self.__pointMutation()
-        # self.__doublePointMutation()
-        # self.__xInsertionPointMutation()
+        self.__pointMutation()
+        self.__doublePointMutation()
+        self.__xInsertionPointMutation()
         
         return self.mutants_list
 
@@ -41,10 +41,10 @@ class HttpTeClPlugin:
         mutant = HttpRequestPrototype(self.gadget_dict , add_default_cl=add_content_lenght)
         mutant.addHeader("Host", self.host)
         mutant.addHeader("Connection", "Close")
-        mutant.addHeader(
-            "User-Agent", "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:98.0) Gecko/20100101 Firefox/98.0")
-        mutant.addHeader(
-            "Content-type", "application/x-www-form-urlencoded; charset=UTF-8")
+        # mutant.addHeader(
+        #     "User-Agent", "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:98.0) Gecko/20100101 Firefox/98.0")
+        # mutant.addHeader(
+        #     "Content-type", "application/x-www-form-urlencoded; charset=UTF-8")
         if tecl_name and tecl_name:
             mutant.addHeader(tecl_name, tecl_value)
 

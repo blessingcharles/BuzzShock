@@ -6,8 +6,28 @@ import ssl
 
 class ShockerSocket:
     def __init__(self, host: str, port: int = 80, timeout: int = 5,
-                 buffsize: int = 4096, is_ssl: bool = False) -> None:
+                buffsize: int = 4096, is_ssl: bool = False) -> None:
+        """
+            A simple pluggable socket for buzz shock 
 
+            Attributes
+            -------------
+            host : str
+            port : int
+            timeout : int
+            buffsize : int
+            is_ssl : bool
+
+            Method
+            -----------
+            plug: 
+                connecting the socket
+            send:
+                sending the payload
+            recv:
+                receive atmost buffsize
+        
+        """
         self.host = host
         self.port = port
         self.timeout = timeout
