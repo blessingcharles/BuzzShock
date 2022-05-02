@@ -30,21 +30,21 @@ class HttpTeClPlugin:
 
         self.__normal_req()
         # Random shocking characters insertion
-        self.__pointMutation()
-        self.__doublePointMutation()
-        self.__xInsertionPointMutation()
+        # self.__pointMutation()
+        # self.__doublePointMutation()
+        # self.__xInsertionPointMutation()
         
         return self.mutants_list
 
-    def httpTemplate(self, tecl_name: str, tecl_value: str, http_body: str = "0\r\n\r\nX") -> HttpRequestPrototype:
+    def httpTemplate(self, tecl_name: str, tecl_value: str, http_body: str = "0\r\n\r\nX" , add_content_lenght : bool = True) -> HttpRequestPrototype:
 
-        mutant = HttpRequestPrototype(self.gadget_dict)
-        # mutant.addHeader("Host", self.host)
-        # mutant.addHeader("Connection", "Close")
-        # mutant.addHeader(
-        #     "User-Agent", "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:98.0) Gecko/20100101 Firefox/98.0")
-        # mutant.addHeader(
-        #     "Content-type", "application/x-www-form-urlencoded; charset=UTF-8")
+        mutant = HttpRequestPrototype(self.gadget_dict , add_default_cl=add_content_lenght)
+        mutant.addHeader("Host", self.host)
+        mutant.addHeader("Connection", "Close")
+        mutant.addHeader(
+            "User-Agent", "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:98.0) Gecko/20100101 Firefox/98.0")
+        mutant.addHeader(
+            "Content-type", "application/x-www-form-urlencoded; charset=UTF-8")
         if tecl_name and tecl_name:
             mutant.addHeader(tecl_name, tecl_value)
 
@@ -52,9 +52,11 @@ class HttpTeClPlugin:
         return mutant
 
     def __normal_req(self):
-        self.mutants_list["normal-rq"] = self.httpTemplate(None , None)
-        self.mutants_list["cl-tl-req"] = self.httpTemplate(
-            "Transfer-Encoding","chunked"
+        self.mutants_list["normal-req-cl"] = self.httpTemplate(None , None)
+        self.mutants_list["normal-req-te"] = self.httpTemplate(
+            "Transfer-Encoding","chunked" ,
+            add_content_lenght=False ,
+            http_body="2\r\naa\r\n0\r\n\r\n"
         )
 
     def __pointMutation(self):

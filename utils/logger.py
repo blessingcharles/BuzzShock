@@ -30,3 +30,33 @@ class Logger:
 
 # general logger
 printer = Logger()
+
+class Bzlogger:
+
+    @staticmethod
+    def print_general(color  , tag : str = "[.]" , message : str = "", *args):
+        message = color + f"{tag} {message} "
+        for arg in args:
+            message =  message + " " + arg
+
+        message += colorama.Style.RESET_ALL
+        print(message)
+
+    @staticmethod
+    def info(message : str , *args):
+        Bzlogger.print_general(color=colorama.Fore.BLUE , tag="[*]" , message=message , *args)
+
+    @staticmethod
+    def error(message : str , *args):
+        Bzlogger.print_general(color=colorama.Fore.RED , tag="[-]" , message=message , *args)
+
+    @staticmethod
+    def success(message : str , *args):
+        Bzlogger.print_general(color=colorama.Fore.GREEN , tag="[+]" , message=message , *args)
+
+    @staticmethod
+    def warning(message : str , *args):
+        Bzlogger.print_general(color=colorama.Fore.YELLOW , tag="[#]" , message=message , *args)
+        
+    def printer(message : str , *args):
+        Bzlogger.print_general(color=colorama.Fore.LIGHTBLUE_EX , tag="" , message=message , *args)
