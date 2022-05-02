@@ -1,9 +1,7 @@
-
 from collections import deque
 from pprint import pprint
 from core.parsers.abnfTokenizer import Tokenizer
 from core.types.abnfToken import ABNFToken, ABNFTokenDict, ABNFTokenType
-
 
 class ABNFParser:
     def __init__(self, source_file: str) -> None:

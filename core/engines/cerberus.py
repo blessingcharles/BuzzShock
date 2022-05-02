@@ -1,6 +1,7 @@
 import importlib
 import pkgutil
 from pprint import pprint
+from time import sleep
 from typing import List
 
 from core.engines.coreEngine import CoreEngine
@@ -40,10 +41,17 @@ class Cerberus(CoreEngine):
             
             plugin_module = discovered_plugins[plugin_name]
             plugin_class = getattr(plugin_module , plugin_name) 
+
+            # creating an instance of the plugin class
             plugin = plugin_class(self.endpoint, self.gadget_dict, self.verbose)
             payload_set = plugin.generate()
 
+            # payload set will contains all
             for key, value in payload_set.items():
+                # if self.verbose:
+                print("[+] Payload type : " , key)
+                pprint(repr(value))
                 result = self.launchCustomPayload(value)
                 print(result)
+                sleep(2)
 

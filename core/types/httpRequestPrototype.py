@@ -35,7 +35,7 @@ class HttpRequestPrototype:
         if self.body:
             self.addHeader("Content-Length", str(len(self.body)))
 
-        request += self.request_line + self.header + self.body
+        request += self.request_line + self.header + GadgetTokens.__CRLF__ + self.body
 
         for g_key, g_value in self.gadgets.items():
             request = request.replace(g_key, g_value)

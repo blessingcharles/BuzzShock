@@ -1,0 +1,32 @@
+
+├── buzzshock.py
+├── core
+│   ├── engines
+│   │   ├── cerberus.py
+│   │   ├── coreEngine.py
+│   │   ├── httpBuzzEngine.py
+│   │   └── shockerSocket.py
+│   ├── mutators
+│   │   ├── httpMutator.py
+│   │   ├── mutator.py
+│   ├── parsers
+│   │   ├── abnfParsers.py
+│   │   ├── abnfTokenizer.py
+│   ├── plugins
+│   │   ├── HttpTeClPlugin.py
+│   ├── shockers
+│   │   ├── basic.py
+│   └── types
+│       ├── abnfToken.py
+│       ├── httpBuzzTokens.py
+│       ├── httpRequestPrototype.py
+│       ├── mutationTypes.py
+    ├── args.py
+    ├── banner.py
+    ├── __init__.py
+    ├── logger.py
+    └── utils.py
+
+
+Created an automated protocol fuzzer for rfc abnf grammar for point and genetic mutation and fuzz the
+various simulated environmnet of various servers and proxy 

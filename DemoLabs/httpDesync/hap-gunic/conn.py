@@ -1,11 +1,8 @@
-
 from io import BytesIO
 import socket
 import ssl
 from http.client import HTTPResponse
-
 import urllib3
-
 
 class ShockerSocket:
     def __init__(self, host: str, port: int = 80, timeout: int = 5,
@@ -20,7 +17,6 @@ class ShockerSocket:
         self.is_ssl = is_ssl
 
     def plug(self):
-
         if (self.is_ssl):
 
             context: ssl.SSLContext = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)

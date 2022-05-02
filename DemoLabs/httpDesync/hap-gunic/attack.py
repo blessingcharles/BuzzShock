@@ -1,8 +1,6 @@
 from conn import BytesIOSocket , ShockerSocket
 from rich import print
 
-
-        
 def malicious_user(payload , host , port ):
     print("[Attacker]" ,  ":vampire:")
     s = ShockerSocket(host , port)
