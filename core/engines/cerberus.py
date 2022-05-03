@@ -116,7 +116,7 @@ class Cerberus(CoreEngine):
                 f"{self.__extractHeaders(resp.getheaders())}\n\n{resp.data}")
 
         self.lg.logTofile(
-            f"\n---PayloadType : {key}----\nRequest\n{str(value)}\nResponse: {resp.status}\n{self.__extractHeaders(resp.getheaders())}{resp.data}")
+            f"\n---PayloadType : {key}----\nRequest\n{str(value)}\nResponse: {result.decode()}")
 
     def __extractHeaders(self, headerDict):
         obj = {}

@@ -35,7 +35,8 @@ if __name__ == "__main__":
 
     Bzlogger.info("Output directory : " + output_dir)
     Bzlogger.info("Worker Thread : " + str(threads))
-    
+    Bzlogger.info("Verbose : " + str(verbose))
+
     dir_create(output_dir)
     cb = Cerberus(protocol=protocol, host=host, port=port, output_dir=output_dir, endpoint=endpoint,
                   engines_list=engines_list, plugins_list=plugins_list, threads=threads, verbose=verbose)
