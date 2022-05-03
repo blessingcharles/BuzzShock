@@ -81,15 +81,13 @@ class Cerberus(CoreEngine):
         # run the given plugins
         for plugin_name in self.plugins_list:
 
-            print("Running Plugin : ", plugin_name)
 
             output_file = self.output_dir + \
                 f"/{plugin_name}__port{self.port}.txt"
 
             self.lg = Logger(filename=output_file)
 
-            Bzlogger.info(output_file)
-
+            
             plugin_module = discovered_plugins[plugin_name]
             plugin_class = getattr(plugin_module, plugin_name)
 
@@ -98,7 +96,10 @@ class Cerberus(CoreEngine):
                 self.endpoint, self.gadget_dict, self.verbose)
             payload_set = plugin.generate()
 
-            # payload set will contains all
+            Bzlogger.success("Running Plugin : "+ plugin_name)
+            Bzlogger.info("Output file : " + output_file)
+            Bzlogger.success("Generated Requests : " + str(len(payload_set)))
+            sleep(1)
 
             with ThreadPoolExecutor(max_workers=self.threads) as exec:
                 for key, value in payload_set.items():
