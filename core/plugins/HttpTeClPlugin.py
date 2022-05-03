@@ -72,8 +72,9 @@ class HttpTeClPlugin:
         )
         self.mutants_list["te-and-cl"] = self.httpTemplate(
             "Transfer-Encoding" , "chunked" ,
+            mutation_type="te-and-cl"
         )
-
+        
     def __pointMutation(self):
         # Random shocking characters insertion
         for shockers in range(0x1, 0xFF):
