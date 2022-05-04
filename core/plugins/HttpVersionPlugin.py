@@ -6,7 +6,7 @@ class HttpVersionPlugin:
 
     def __init__(self, endpoint: str = "", gadget_dict: dict = None, verbose: bool = False) -> None:
         """
-            Fuzzing for the Grammar
+            Fuzzing for the Grammar HTTP-version
 
             HTTP-version  = HTTP-name "/" DIGIT "." DIGIT
             HTTP-name     = %x48.54.54.50 ; "HTTP", case-sensitive
