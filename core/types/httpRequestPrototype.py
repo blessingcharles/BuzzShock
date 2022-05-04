@@ -6,7 +6,7 @@ from core.types.httpBuzzTokens import DefaultGadgets, MandatoryGadgetTokens, Gad
 class HttpRequestPrototype:
     def __init__(self, gadgets: None, method: str = "GET", request_target: str = "/",
                  http_version: str = "1.1", add_default_cl: bool = True,
-                 http_name: str = "HTTP") -> None:
+                 http_name: str = "HTTP" , after_header_colon : str = " ") -> None:
         """
             A class used to generate Http Request by manipulating various fuzzing places
             ...
@@ -29,7 +29,9 @@ class HttpRequestPrototype:
                 default /
             http_name : str
                 default HTTP
-                
+            after_header_colon : str
+                default SPACE
+
             Methods
             -------------
             addHeader(key , val)
@@ -41,6 +43,7 @@ class HttpRequestPrototype:
         self.body = None
         self.gadgets = gadgets or DefaultGadgets
         self.add_default_cl = add_default_cl
+        self.after_header_colon = after_header_colon
         self.first_time = True
 
     def addHeader(self, key: str, val: str):
@@ -52,7 +55,7 @@ class HttpRequestPrototype:
         """
 
         # we can insert a random char in shocker
-        self.header += f"{key}{GadgetTokens.__SHOCKER__}:{GadgetTokens.__SP__}{val}{GadgetTokens.__CRLF__}"
+        self.header += f"{key}{GadgetTokens.__SHOCKER__}:{self.after_header_colon}{val}{GadgetTokens.__CRLF__}"
 
     def __repr__(self) -> str:
         return self.__str__()

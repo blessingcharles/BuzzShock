@@ -66,7 +66,8 @@ class Cerberus(CoreEngine):
         for plugin_name in self.plugins_list:
 
             dir_create(self.output_dir + f"/port{self.port}")
-            output_file = self.output_dir + \
+            
+            output_file = self.output_dir + f"/port{self.port}" + \
                 f"/{plugin_name}__port{self.port}.txt"
 
             self.lg = Logger(filename=output_file)
@@ -89,7 +90,7 @@ class Cerberus(CoreEngine):
                     exec.submit(self.__buzz_jobs, key, value)
 
             Bzlogger.success(f"{plugin_name} Finished")
-            
+
     def __buzz_jobs(self, key, value):
 
         sleep(self.sleepingtime)

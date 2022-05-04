@@ -11,6 +11,8 @@ class HttpLaxTePlugin:
         """
             Fuzz For Lax Transfer Encoding Header Parsing
 
+            RFC : Transfer-Encoding = 1#transfer-coding
+
             Methods
             ---------
             case_collapser
@@ -36,7 +38,7 @@ class HttpLaxTePlugin:
 
         return self.mutants_list
 
-    def httpTemplate(self, tecl_name: str = None, tecl_value: str=None, http_body: str = "2\r\nyy\r\n0\r\n\r\nX",
+    def httpTemplate(self, tecl_name: str = None, tecl_value: str = None, http_body: str = "2\r\nyy\r\n0\r\n\r\nX",
                      add_content_lenght: bool = True, mutation_type: str = None) -> HttpRequestPrototype:
 
         mutant = HttpRequestPrototype(
@@ -101,19 +103,19 @@ class HttpLaxTePlugin:
 
         for shocker in bad_chunkprefix:
             self.mutants_list["bad-chunksize-%s2" % shocker] = self.httpTemplate(
-                tecl_name="Transfer-Encoding" ,
-                tecl_value="chunked" ,
+                tecl_name="Transfer-Encoding",
+                tecl_value="chunked",
                 mutation_type="bad-chunksize-%s2" % shocker,
                 http_body="%s2\r\nyy\r\n0\r\n\r\n" % shocker
             )
-        bad_terminatingchunks = ["0" , "00" , "+" , "-" , "0." , ".0"]
+        bad_terminatingchunks = ["0", "00", "+", "-", "0.", ".0"]
 
         for shocker in bad_terminatingchunks:
 
             # prefix
             self.mutants_list["bad-terminatingchunk-%s0" % shocker] = self.httpTemplate(
-                tecl_name="Transfer-Encoding" ,
-                tecl_value="chunked" ,
+                tecl_name="Transfer-Encoding",
+                tecl_value="chunked",
                 mutation_type="bad-terminatingchunk-%s0" % shocker,
                 add_content_lenght=False,
                 http_body="2\r\nyy\r\n%s0\r\n\r\n" % shocker
@@ -121,12 +123,24 @@ class HttpLaxTePlugin:
 
             # suffix
             self.mutants_list["bad-terminatingchunk-0%s" % shocker] = self.httpTemplate(
-                tecl_name="Transfer-Encoding" ,
-                tecl_value="chunked" ,
+                tecl_name="Transfer-Encoding",
+                tecl_value="chunked",
                 mutation_type="bad-terminatingchunk-0%s" % shocker,
                 add_content_lenght=False,
                 http_body="2\r\nyy\r\n0%s\r\n\r\n" % shocker
             )
+
+    def __more_transfer_codings(self):
+
+        self.mutants_list["mult-enc"] = self.httpTemplate(
+            tecl_name="Transfer-Encoding", tecl_value="gzip , chunked",
+            mutation_type="mult-enc",
+            add_content_lenght=False,
+        )
+
+        self.mutants_list["mult-enc-trans-ext"] = self.httpTemplate(
+            tecl_name="Transfer-Encoding" , tecl_value="gzip , chunked ; token=randchar"
+        )
 
     def __normal_req(self):
         self.mutants_list["normal-req-cl"] = self.httpTemplate(
