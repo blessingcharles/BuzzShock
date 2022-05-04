@@ -62,6 +62,15 @@ class Bzlogger:
     @staticmethod
     def warning(message : str , *args):
         Bzlogger.print_general(color=colorama.Fore.YELLOW , tag="[#] " , message=message , *args)
-        
+    
+    @staticmethod
     def printer(message : str , *args):
         Bzlogger.print_general(color=colorama.Fore.LIGHTBLUE_EX , tag="" , message=message , *args)
+
+    @staticmethod
+    def crprinter(message : str):
+        message = colorama.Fore.LIGHTCYAN_EX + f"{message}"
+
+        message += colorama.Style.RESET_ALL
+        message.ljust(180)
+        print(message , end="\r")

@@ -7,30 +7,12 @@ from pprint import pprint
 from time import sleep
 from requests import request
 
+from core.engines import discovered_engines , discovered_plugins
 from core.engines.coreEngine import CoreEngine
 from core.engines.httpBuzzEngine import BytesIOSocket
 from utils.logger import Bzlogger, Logger
 
 
-"""
-importing engines and plugins and store it as key value pair in the dictionary object
-
-eg:
-    discovered_plugins["HttpTeClPlugin"] = HttpTeClPlugin <class>
-
-"""
-
-discovered_engines = {
-    name: importlib.import_module(f"core.engines.{name}") for finder, name, ispkg in pkgutil.iter_modules(["core/engines"])
-    if name.endswith("Engine")
-}
-
-discovered_plugins = {
-    name: importlib.import_module(f"core.plugins.{name}") for finder, name, ispkg in pkgutil.iter_modules(["core/plugins"])
-    if name.endswith("Plugin")
-}
-
-print(discovered_plugins)
 
 class Cerberus(CoreEngine):
     def __init__(self, protocol: str, host: str, port: int, output_dir: str, threads: int, endpoint: str = "",
@@ -107,16 +89,19 @@ class Cerberus(CoreEngine):
 
     def __buzz_jobs(self, key, value):
 
-        Bzlogger.info("payload type : " + key)
         sleep(self.sleepingtime)
+        
+        result = self.launchCustomPayload(value)
+        resp = BytesIOSocket.response_from_bytes(result)
         if self.verbose:
-            result = self.launchCustomPayload(value)
-            resp = BytesIOSocket.response_from_bytes(result)
+            Bzlogger.info("payload type : " + key)
             Bzlogger.success("Request")
             Bzlogger.printer(str(value))
             Bzlogger.success(f"Response : {resp.status}")
             Bzlogger.info(
                 f"{self.__extractHeaders(resp.getheaders())}\n\n{resp.data}")
+        else:
+            Bzlogger.crprinter("payload type : " + key)
 
         self.lg.logTofile(
             f"\n---PayloadType : {key}----\nRequest\n{str(value)}\nResponse: {result.decode()}")

@@ -1,7 +1,9 @@
 import os
 from tabnanny import verbose
+from time import sleep
 from urllib.parse import urlparse
 
+from core.engines import discovered_engines , discovered_plugins
 from core.engines.cerberus import Cerberus
 from utils.args import buzzShockArgs
 from utils.logger import Bzlogger
@@ -33,11 +35,15 @@ if __name__ == "__main__":
 
     output_dir = os.getcwd() + "/" + output_dir
 
-    Bzlogger.info("Output directory : " + output_dir)
+    dir_create(output_dir)
+    Bzlogger.success("Output directory : " + output_dir)
     Bzlogger.info("Worker Thread : " + str(threads))
     Bzlogger.info("Verbose : " + str(verbose))
 
-    dir_create(output_dir)
+    Bzlogger.success("Loaded Plugins : " + str(len(discovered_plugins)))
+    Bzlogger.success("Loaded Engines : " + str(len(discovered_engines)))
+    sleep(2)
+    
     cb = Cerberus(protocol=protocol, host=host, port=port, output_dir=output_dir, endpoint=endpoint,
                   engines_list=engines_list, plugins_list=plugins_list, threads=threads, verbose=verbose)
 

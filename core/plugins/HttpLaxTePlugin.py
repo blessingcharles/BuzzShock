@@ -26,13 +26,13 @@ class HttpLaxTePlugin:
     def generate(self) -> "dict[str, HttpRequestPrototype]":
 
         self.__normal_req()
-        # self.__case_collapser()
+        self.__case_collapser()
         self.__bad_chunksize()
 
         # # Random shocking characters insertion
-        # self.__point_mutation()
-        # self.__double_point_mutation()
-        # self.__x_insertion_point_mutation()
+        self.__point_mutation()
+        self.__double_point_mutation()
+        self.__x_insertion_point_mutation()
 
         return self.mutants_list
 

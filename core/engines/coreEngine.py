@@ -56,8 +56,8 @@ class CoreEngine:
                 self.host, self.port, self.timeout, self.buffsize, self.is_ssl)
             cur_sock.plug()
 
-        print("bytes : ", end="")
-        print(payload_body.__str__().encode('utf-8'))
+        # print("bytes : ", end="")
+        # print(payload_body.__str__().encode('utf-8'))
         cur_sock.send(payload_body.__str__().encode('utf-8'))
         response = cur_sock.recv()
         return response
