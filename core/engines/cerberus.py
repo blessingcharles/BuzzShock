@@ -30,12 +30,13 @@ discovered_plugins = {
     if name.endswith("Plugin")
 }
 
+print(discovered_plugins)
 
 class Cerberus(CoreEngine):
     def __init__(self, protocol: str, host: str, port: int, output_dir: str, threads: int, endpoint: str = "",
                  engines_list: list = [], plugins_list=[], gadgets_dict: dict = None,
                  verbose: bool = False, timeout: int = 5, buffsize: int = 8192, reuse_socket: bool = False, is_ssl: bool = False,
-                 sleepingtime: int = 0.5, log_file: str = None) -> None:
+                 sleepingtime: int = 0.1, log_file: str = None) -> None:
         """
             Steering to run various plugins and engines to fuzz protocols
 
@@ -87,7 +88,6 @@ class Cerberus(CoreEngine):
 
             self.lg = Logger(filename=output_file)
 
-            
             plugin_module = discovered_plugins[plugin_name]
             plugin_class = getattr(plugin_module, plugin_name)
 
@@ -106,7 +106,9 @@ class Cerberus(CoreEngine):
                     exec.submit(self.__buzz_jobs, key, value)
 
     def __buzz_jobs(self, key, value):
+
         Bzlogger.info("payload type : " + key)
+        sleep(self.sleepingtime)
         if self.verbose:
             result = self.launchCustomPayload(value)
             resp = BytesIOSocket.response_from_bytes(result)

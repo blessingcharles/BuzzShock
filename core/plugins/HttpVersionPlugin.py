@@ -1,3 +1,4 @@
+from urllib.parse import ParseResult, urlparse
 from core.types.httpRequestPrototype import HttpRequestPrototype
 
 
@@ -21,6 +22,7 @@ class HttpVersionPlugin:
         self.__normal_req()
         self.__ambigious_versions()
         self.__ambigious_names()
+        self.__point_mutation()
 
         return self.mutants_list
 
@@ -78,9 +80,11 @@ class HttpVersionPlugin:
             add_content_length=False)
 
         # Invalid Version type
-        invalid_versions = ["0.8", "1.2", "1.10", "1.10000000", "1.100000000",
-                            "1.01", "1.00000001", "1.000000001", "1.1010", "1.0101", "01.1",
-                            "01.10", "01.01" , "1.1.0" , "1.0.0","1.0.1" , "1.1.1"]
+        invalid_versions = ['%0.1f' % (i*0.1) for i in range(100)]
+
+        invalid_versions = invalid_versions + ["1.10000000", "1.100000000",
+                                               "1.01", "1.00000001", "1.000000001", "1.1010", "1.0101", "01.1",
+                                               "01.10", "01.01", "1.1.0", "1.0.0", "1.0.1", "1.1.1"]
 
         for version in invalid_versions:
             self.mutants_list[f"vn-ivv-{version}"] = self.httpTemplate(
@@ -105,3 +109,72 @@ class HttpVersionPlugin:
             tecl_value="chunked",
             mutation_type="ivn-vv-http",
             add_content_length=False)
+
+    def __point_mutation(self):
+
+        for shockers in range(0x00, 0xff):
+            self.mutants_list["v-point-%02x.1" % shockers] = self.httpTemplate(
+                tecl_name="Transfer-Encoding",
+                tecl_value="chunked",
+                mutation_type="v-point-%02x.1" % shockers,
+                http_version="%c.1" % shockers
+            )
+            self.mutants_list["v-point-1.%02x" % shockers] = self.httpTemplate(
+                tecl_name="Transfer-Encoding",
+                tecl_value="chunked",
+                mutation_type="v-point-1.%02x" % shockers,
+                http_version="1.%c" % shockers
+            )
+            self.mutants_list["v-point-%02x.%02x" % (shockers, shockers)] = self.httpTemplate(
+                tecl_name="Transfer-Encoding",
+                tecl_value="chunked",
+                mutation_type="v-point-%02x.%02x" % (shockers, shockers),
+                http_version="%c.%c" % (shockers, shockers)
+            )
+
+            # fuzzing for invalid name HTTP character by character
+
+            self.mutants_list["ivn-point-%02xTTP" % shockers] = self.httpTemplate(
+                tecl_name="Transfer-Encoding",
+                tecl_value="chunked",
+                mutation_type="ivn-point-%02xTTP" % shockers,
+                http_name="%cTTP" % shockers
+            )
+            self.mutants_list["ivn-point-H%02xTP" % shockers] = self.httpTemplate(
+                tecl_name="Transfer-Encoding",
+                tecl_value="chunked",
+                mutation_type="ivn-point-H%02xTP" % shockers,
+                http_name="H%cTP" % shockers
+            )
+            self.mutants_list["ivn-point-HT%02xP" % shockers] = self.httpTemplate(
+                tecl_name="Transfer-Encoding",
+                tecl_value="chunked",
+                mutation_type="ivn-point-HT%02xP" % shockers,
+                http_name="HT%cP" %shockers
+            )
+
+            self.mutants_list["ivn-point-HTT%02x" % shockers] = self.httpTemplate(
+                tecl_name="Transfer-Encoding",
+                tecl_value="chunked",
+                mutation_type="ivn-point-HTT%02x" % shockers,
+                http_name="HTT%c" %shockers
+            )
+
+    def urlParser(self, url):
+
+        parser_obj: ParseResult = urlparse(url)
+        netloc = parser_obj.netloc
+        scheme = parser_obj.scheme
+        uri = '/'.join(url.split('/')[3:])
+
+        if ':' not in netloc:
+            if scheme == "https":
+                port = 443
+                host = netloc
+            else:
+                port = 80
+                host = netloc
+        else:
+            host, port = netloc.split(':')
+
+        return host, port, netloc, uri

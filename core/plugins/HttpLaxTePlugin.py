@@ -23,7 +23,7 @@ from core.types.httpRequestPrototype import HttpRequestPrototype
 """
 
 
-class HttpTeClPlugin:
+class HttpLaxTePlugin:
 
     def __init__(self, endpoint: str = "", gadget_dict: dict = None, verbose: bool = False) -> None:
         self.url = endpoint
