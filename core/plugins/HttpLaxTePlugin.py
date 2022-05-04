@@ -207,7 +207,7 @@ class HttpLaxTePlugin:
 
             self.mutants_list["double-end-start-%02x" % shockers] = self.httpTemplate(
                 "%cTransfer-Encoding" % shockers, "%cchunked" % shockers,
-                mutation_type="double-end-start-%02x"
+                mutation_type="double-end-start-%02x" % shockers
             )
 
             # without content length header

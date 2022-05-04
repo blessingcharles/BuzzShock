@@ -11,6 +11,7 @@ from core.engines import discovered_engines , discovered_plugins
 from core.engines.coreEngine import CoreEngine
 from core.engines.httpBuzzEngine import BytesIOSocket
 from utils.logger import Bzlogger, Logger
+from utils.utils import dir_create
 
 
 
@@ -64,7 +65,7 @@ class Cerberus(CoreEngine):
         # run the given plugins
         for plugin_name in self.plugins_list:
 
-
+            dir_create(self.output_dir + f"/port{self.port}")
             output_file = self.output_dir + \
                 f"/{plugin_name}__port{self.port}.txt"
 
@@ -78,7 +79,7 @@ class Cerberus(CoreEngine):
                 self.endpoint, self.gadget_dict, self.verbose)
             payload_set = plugin.generate()
 
-            Bzlogger.success("Running Plugin : "+ plugin_name)
+            Bzlogger.info("Running Plugin : "+ plugin_name)
             Bzlogger.info("Output file : " + output_file)
             Bzlogger.success("Generated Requests : " + str(len(payload_set)))
             sleep(1)
@@ -87,6 +88,8 @@ class Cerberus(CoreEngine):
                 for key, value in payload_set.items():
                     exec.submit(self.__buzz_jobs, key, value)
 
+            Bzlogger.success(f"{plugin_name} Finished")
+            
     def __buzz_jobs(self, key, value):
 
         sleep(self.sleepingtime)

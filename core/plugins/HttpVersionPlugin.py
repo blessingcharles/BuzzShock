@@ -51,9 +51,13 @@ class HttpVersionPlugin:
 
     def __normal_req(self):
         self.mutants_list["vn-vv"] = self.httpTemplate()
-        self.mutants_list["vvn-vv"] = self.httpTemplate(
-            http_name="%x48.54.54.50")
-
+        self.mutants_list["vvn-vv-1"] = self.httpTemplate(
+            http_name="0x48.54.54.50")
+        self.mutants_list["vvn-vv-2"] = self.httpTemplate(
+            http_name="%x.%x.%x.%x"%(0x48 , 0x54 , 0x54 , 0x50))
+        self.mutants_list["vvn-vv-2"] = self.httpTemplate(
+            http_name="%c.%c.%c.%c"%(0x48 , 0x54 , 0x54 , 0x50))
+            
     def __ambigious_versions(self):
         """
         Naming Convention used
