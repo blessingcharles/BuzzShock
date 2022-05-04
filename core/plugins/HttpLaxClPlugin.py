@@ -21,6 +21,7 @@ class HttpLaxClPlugin:
         self.verbose = verbose
 
     def generate(self) -> "dict[str, HttpRequestPrototype]":
+        self.__normal_req()
         self.__multiple_cl()
         return self.mutants_list
 
