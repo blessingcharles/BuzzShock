@@ -1,18 +1,13 @@
 from concurrent.futures import ThreadPoolExecutor
-import importlib
-from optparse import Values
-import os
-import pkgutil
 from pprint import pprint
 from time import sleep
 from requests import request
 
-from core.engines import discovered_engines , discovered_plugins
+from core.engines import discovered_engines, discovered_plugins
 from core.engines.coreEngine import CoreEngine
 from core.engines.httpBuzzEngine import BytesIOSocket
 from utils.logger import Bzlogger, Logger
 from utils.utils import dir_create
-
 
 
 class Cerberus(CoreEngine):
@@ -66,7 +61,7 @@ class Cerberus(CoreEngine):
         for plugin_name in self.plugins_list:
 
             dir_create(self.output_dir + f"/port{self.port}")
-            
+
             output_file = self.output_dir + f"/port{self.port}" + \
                 f"/{plugin_name}__port{self.port}.txt"
 
@@ -80,7 +75,7 @@ class Cerberus(CoreEngine):
                 self.endpoint, self.gadget_dict, self.verbose)
             payload_set = plugin.generate()
 
-            Bzlogger.info("Running Plugin : "+ plugin_name)
+            Bzlogger.info("Running Plugin : " + plugin_name)
             Bzlogger.info("Output file : " + output_file)
             Bzlogger.success("Generated Requests : " + str(len(payload_set)))
             sleep(1)
@@ -94,7 +89,7 @@ class Cerberus(CoreEngine):
     def __buzz_jobs(self, key, value):
 
         sleep(self.sleepingtime)
-        
+
         result = self.launchCustomPayload(value)
         resp = BytesIOSocket.response_from_bytes(result)
         if self.verbose:

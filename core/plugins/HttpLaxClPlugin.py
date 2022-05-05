@@ -5,8 +5,6 @@ from numpy import add
 from core.types.httpRequestPrototype import HttpRequestPrototype
 
 # RFC 7230 : https://datatracker.ietf.org/doc/html/rfc7230#section-3.3.3
-
-
 class HttpLaxClPlugin:
     def __init__(self, endpoint: str = "", gadget_dict: dict = None, verbose: bool = False) -> None:
         """
