@@ -5,7 +5,7 @@ from requests import request
 
 from core.engines import discovered_engines, discovered_plugins
 from core.engines.coreEngine import CoreEngine
-from core.engines.httpBuzzEngine import BytesIOSocket
+from core.engines.HttpBuzzEngine import BytesIOSocket
 from utils.logger import Bzlogger, Logger
 from utils.utils import dir_create
 
@@ -85,6 +85,27 @@ class Cerberus(CoreEngine):
                     exec.submit(self.__buzz_jobs, key, value)
 
             Bzlogger.success(f"{plugin_name} Finished")
+
+        # run the given engines
+        for engine_name in self.engine_list:
+
+            dir_create(self.output_dir + f"/port{self.port}")
+
+            output_file = self.output_dir + f"/port{self.port}" + \
+                f"{engine_name}__port{self.port}.txt"
+
+            self.lg = Logger(filename=output_file)
+            engine_module = discovered_engines[engine_name]
+            engine_class = getattr(engine_module, engine_name)
+
+            engine = engine_class(
+                host=self.host, port=self.port,
+                reuse_socket=self.reuse_socket, is_ssl=self.is_ssl,
+                timeout=self.timeout, buffsize=self.buffsize, 
+                sleepingtime=self.sleepingtime, log_file=self.log_file
+            )
+
+            engine.launch_from_db()
 
     def __buzz_jobs(self, key, value):
 

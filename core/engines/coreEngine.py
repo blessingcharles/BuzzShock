@@ -35,7 +35,8 @@ class CoreEngine:
         self.timeout = timeout
         self.buffsize = buffsize
         self.sleepingtime = sleepingtime
-
+        self.log_file = log_file
+        
         if self.reuse_socket:
             self.sock = ShockerSocket(
                 host, port, timeout, buffsize, is_ssl)
