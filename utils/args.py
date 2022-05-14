@@ -27,7 +27,7 @@ def buzzShockArgs() -> tuple:
     parser.add_argument("-t", "--threads", dest="threads",
                         default=8, type=int, help="specify the number of threads")
 
-    parser.add_argument("-g", "--grammar-file", dest="grammar_file",
+    parser.add_argument("-gf", "--grammar-file", dest="grammar_file",
                         default=None, help="specify the http abnf grammar file")
 
     args = parser.parse_args()

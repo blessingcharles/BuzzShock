@@ -9,7 +9,7 @@ from core.parsers.abnfParsers import ABNFParser
 from utils.args import buzzShockArgs
 from utils.logger import Bzlogger
 from utils.utils import dir_create
-
+from config import CONFIG
 
 def getHostPort(protocol: str, endpoint: str):
     if protocol == "http" or protocol == "https":
@@ -40,16 +40,16 @@ if __name__ == "__main__":
     Bzlogger.success("Output directory : " + output_dir)
     Bzlogger.info("Worker Thread : " + str(threads))
     Bzlogger.info("Verbose : " + str(verbose))
+    
+    Bzlogger.success("Loaded Plugins : " + str(len(discovered_plugins)))
+    Bzlogger.success("Loaded Engines : " + str(len(discovered_engines)))
 
     if grammar_file:
         Bzlogger.info("Grammar File Path: " + grammar_file)
         if os.path.exists(grammar_file):
             Bzlogger.success("File Exists")
     
-    Bzlogger.success("Loaded Plugins : " + str(len(discovered_plugins)))
-    Bzlogger.success("Loaded Engines : " + str(len(discovered_engines)))
-    
-    sleep(2)
+    sleep(CONFIG['sleeping-time'])
 
     if plugins_list or engines_list:
         # Running the plugins and engines
@@ -58,10 +58,12 @@ if __name__ == "__main__":
 
         cb.run()
 
+    sleep(CONFIG['sleeping-time'])
     # mutate the given abnf request
     if grammar_file:
         
         p = ABNFParser(grammar_file)
         p.parse()
 
-        
+        p.printTreeDFS(p.root)
+

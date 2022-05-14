@@ -1,7 +1,9 @@
 from collections import deque
 from pprint import pprint
+from typing import List
 from core.parsers.abnfTokenizer import Tokenizer
 from core.types.abnfToken import ABNFToken, ABNFTokenDict, ABNFTokenType
+
 
 class ABNFParser:
     def __init__(self, source_file: str) -> None:
@@ -59,7 +61,6 @@ class ABNFParser:
             cur_node = deq.pop()
             # explore its expansion nodes and add it to the deque
             for expansion_node in self.abnf_obj[cur_node]:
-
                 cur_node.children.append(expansion_node)
 
                 # if self.__is_already_visited(expansion_node):
@@ -74,8 +75,8 @@ class ABNFParser:
                     # append its parent node
                     self.shocking_nodes.append(cur_node)
 
-    def getChildren(self , nodeVal : str):
-        
+    def getChildren(self, nodeVal: str):
+
         for node in self.abnf_obj:
             if node.value == nodeVal:
                 return self.abnf_obj[node]
@@ -85,21 +86,46 @@ class ABNFParser:
     def __is_already_visited(self, node: ABNFToken):
         return node in self.terminal_nodes or node in self.nonterminal_nodes or node in self.shocking_nodes
 
-    def printTree(self, rootNode):
+    def printTreeBFS(self, rootNode: ABNFToken) ->None :
 
         d = deque()
         d.append(rootNode)
 
-        alread_visited = []
+        alread_visited: list[ABNFToken] = []
         alread_visited.append(rootNode)
 
         while d:
-            cur_node = d.pop()
+            cur_node: ABNFToken = d.popleft()
             print("[+] Exploring -------> ", cur_node)
 
             for neigh_node in cur_node.children:
-                # if neigh_node not in alread_visited:
+                if neigh_node not in alread_visited:
                     print(neigh_node)
                     alread_visited.append(neigh_node)
-                    d.append(neigh_node)
+                    if neigh_node.type != ABNFTokenType.TERMINAL :
+                        d.append(neigh_node)
+
             print("-------------------------------")
+
+
+    def printTreeDFS(self , rootNode: ABNFToken) -> None :
+
+        already_visited : list[ABNFToken] = []
+
+        def __dfs(node : ABNFToken) -> None:
+            # if node in already_visited:
+            #     return 
+            already_visited.append(node)
+
+            for neigh_node in node.children:
+                if neigh_node.type != ABNFTokenType.TERMINAL:
+                    __dfs(neigh_node)
+                else:
+                    pprint(neigh_node)
+            print("-------------------------------")
+            
+        __dfs(rootNode)
+
+
+
+    
