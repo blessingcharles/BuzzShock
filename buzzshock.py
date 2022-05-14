@@ -3,8 +3,9 @@ from tabnanny import verbose
 from time import sleep
 from urllib.parse import urlparse
 
-from core.engines import discovered_engines , discovered_plugins
+from core.engines import discovered_engines, discovered_plugins
 from core.engines.cerberus import Cerberus
+from core.parsers.abnfParsers import ABNFParser
 from utils.args import buzzShockArgs
 from utils.logger import Bzlogger
 from utils.utils import dir_create
@@ -19,7 +20,7 @@ def getHostPort(protocol: str, endpoint: str):
 
 if __name__ == "__main__":
 
-    endpoint, protocol, engines_list, plugins_list, output_dir, threads, verbose = buzzShockArgs()
+    endpoint, protocol, engines_list, plugins_list, output_dir, threads, verbose, grammar_file = buzzShockArgs()
 
     if engines_list:
         engines_list = engines_list.split(",")
@@ -40,12 +41,27 @@ if __name__ == "__main__":
     Bzlogger.info("Worker Thread : " + str(threads))
     Bzlogger.info("Verbose : " + str(verbose))
 
+    if grammar_file:
+        Bzlogger.info("Grammar File Path: " + grammar_file)
+        if os.path.exists(grammar_file):
+            Bzlogger.success("File Exists")
+    
     Bzlogger.success("Loaded Plugins : " + str(len(discovered_plugins)))
     Bzlogger.success("Loaded Engines : " + str(len(discovered_engines)))
-    sleep(2)
     
-    cb = Cerberus(protocol=protocol, host=host, port=port, output_dir=output_dir, endpoint=endpoint,
-                  engines_list=engines_list, plugins_list=plugins_list, threads=threads, verbose=verbose)
+    sleep(2)
 
-    cb.run()
+    if plugins_list or engines_list:
+        # Running the plugins and engines
+        cb = Cerberus(protocol=protocol, host=host, port=port, output_dir=output_dir, endpoint=endpoint,
+                    engines_list=engines_list, plugins_list=plugins_list, threads=threads, verbose=verbose)
 
+        cb.run()
+
+    # mutate the given abnf request
+    if grammar_file:
+        
+        p = ABNFParser(grammar_file)
+        p.parse()
+
+        

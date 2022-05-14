@@ -32,7 +32,7 @@ class BytesIOSocket:
 class HttpBuzzEngine(CoreEngine):
     def __init__(self, host: str, port: int, timeout: int = 5, buffsize: int = 8192,
                  reuse_socket: bool = False, is_ssl: bool = False, sleepingtime: int = 0.5,
-                 log_file: str = None) -> None:
+                 log_file: str = None , verbose : bool = False) -> None:
         """
             Http text based protocol fuzz engine
 
@@ -56,6 +56,7 @@ class HttpBuzzEngine(CoreEngine):
         super().__init__(host=host, port=port, reuse_socket=reuse_socket, is_ssl=is_ssl,
                          timeout=timeout, buffsize=buffsize, sleepingtime=sleepingtime , log_file=log_file)
 
+        self.verbose = verbose
 
     def launch_from_db(self, db_path: str = "db/http", testing_server_name: str = None) -> Dict[str, str]:
 
@@ -76,6 +77,7 @@ class HttpBuzzEngine(CoreEngine):
                     response = BytesIOSocket.response_from_bytes(
                         raw_response_obj)
 
+                    
                     if response.status < 400:
                         self.results[path] = f"Request\n\n{payload}\nResponse\n\n{response.getheaders()}\n\n{response.data}"
                         self.logger.log("-"*100)

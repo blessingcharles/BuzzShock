@@ -1,5 +1,6 @@
 from concurrent.futures import ThreadPoolExecutor
 from pprint import pprint
+from tabnanny import verbose
 from time import sleep
 from requests import request
 
@@ -102,7 +103,8 @@ class Cerberus(CoreEngine):
                 host=self.host, port=self.port,
                 reuse_socket=self.reuse_socket, is_ssl=self.is_ssl,
                 timeout=self.timeout, buffsize=self.buffsize, 
-                sleepingtime=self.sleepingtime, log_file=self.log_file
+                sleepingtime=self.sleepingtime, log_file=self.log_file ,
+                verbose=self.verbose
             )
 
             engine.launch_from_db()
