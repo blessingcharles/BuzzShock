@@ -1,3 +1,4 @@
+import copy
 import os
 from tabnanny import verbose
 from time import sleep
@@ -5,6 +6,7 @@ from urllib.parse import urlparse
 
 from core.engines import discovered_engines, discovered_plugins
 from core.engines.cerberus import Cerberus
+from core.mutators.httpMutator import HttpMutator
 from core.parsers.abnfParsers import ABNFParser
 from utils.args import buzzShockArgs
 from utils.logger import Bzlogger
@@ -65,5 +67,20 @@ if __name__ == "__main__":
         p = ABNFParser(grammar_file)
         p.parse()
 
-        p.printTreeDFS(p.root)
+        # p.printTreeDFS(p.root)
+        
+        nodes_to_mutate = {
+            'method': 'point-mutation',
+            'DIGIT': 'point-mutation',
+            'HTTP-name' : 'point-mutation'
+        }
+        url_token = p.getChildren("__URL__")[0]
 
+        for _ in range(5):
+            root_node = copy.deepcopy(p.root)
+
+            m = HttpMutator(url_token.value ,nodes_to_mutate , root_node, verbose=verbose)
+            m.mutate()
+            print("-----------------After Mutations ---------------------")
+            m.zoombieToRequest()
+            print(m.request)

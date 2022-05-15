@@ -4,9 +4,8 @@ from core.types.abnfToken import ABNFToken
 from core.shockers import basic
 
 class Mutator:
-    def __init__(self, root: ABNFToken, non_terminals: List[ABNFToken], min_count: int, max_count: int, random_seed: int, verbose: bool = False) -> None:
+    def __init__(self, root: ABNFToken, min_count: int, max_count: int, random_seed: int, verbose: bool = False) -> None:
         self.root = root
-        self.non_terminals = non_terminals
         self.min_count = min_count
         self.max_count = max_count
         self.random_seed = random_seed
@@ -24,7 +23,7 @@ class Mutator:
         mutant_point = random.randint(0,val_len-1)
         shocker = random.choice(pref_mutants)
         node.children[0].value = cur_val[:mutant_point] + shocker + cur_val[mutant_point:]
-        msg = f"[+]insert point mutation :  mutating {cur_val} to {node.children[0].value}"
+        msg = f"insert point mutation :  mutating {cur_val} to {node.children[0].value}"
         self.mutations_info.append(msg)
 
     def charDelete(self, node: ABNFToken):
@@ -36,7 +35,7 @@ class Mutator:
         mutant_point = random.randint(0,val_len-1)
 
         node.children[0].value = cur_val[:mutant_point] + cur_val[mutant_point+1:]
-        msg = f"[+]delete point mutation :  mutating {cur_val} to {node.children[0].value}"
+        msg = f"delete point mutation :  mutating {cur_val} to {node.children[0].value}"
         self.mutations_info.append(msg)
 
     def charReplace(self, node: ABNFToken  , pref_mutants : List[any] = None):
@@ -51,7 +50,7 @@ class Mutator:
         shocker = random.choice(pref_mutants)
 
         node.children[0].value = cur_val[:mutant_point] + cur_val[mutant_point+1:]
-        msg = f"[+]delete point mutation :  mutating {cur_val} to {node.children[0].value}"
+        msg = f"delete point mutation :  mutating {cur_val} to {node.children[0].value}"
         self.mutations_info.append(msg)
 
     def nodeInsert(self, node: ABNFToken , mutant_genes : List[str]):

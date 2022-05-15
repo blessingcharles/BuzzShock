@@ -1,3 +1,3 @@
 CONFIG = {
-    "sleeping-time": 2,
+    "sleeping-time": 0,
 }

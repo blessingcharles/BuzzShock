@@ -20,7 +20,7 @@ request-target = "__REQUEST_TARGET__"
 method = "GET"/ "HEAD"/ "POST"/ "PUT"/ "DELETE"/ "CONNECT"/ "OPTIONS"/ "TRACE"/ "PATCH"
 SP = " "
 DIGIT = "0" / "1" 
-HTTP-name = "HTTP" / "%x48.54.54.50"
+HTTP-name = "HTTP"
 CRLF = "\r\n"
 
 ; my input
