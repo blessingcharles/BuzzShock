@@ -39,7 +39,7 @@ printer = Logger()
 class Bzlogger:
 
     @staticmethod
-    def print_general(color  , tag : str = "[.] " , message : str = "", *args):
+    def print_general(color , message : str , tag : str = "[.] ", *args):
         message = color + f"{tag}{message} "
         for arg in args:
             message =  message + " " + arg

@@ -30,8 +30,12 @@ def buzzShockArgs() -> tuple:
     parser.add_argument("-gf", "--grammar-file", dest="grammar_file",
                         default=None, help="specify the http abnf grammar file")
 
+    parser.add_argument("-mtc", "--mutants-count", type=int, default=10_000, dest="mutants_count" ,
+                        help="specify the number of mutatants payload to generate from the given rfc abnf grammar")
+
     args = parser.parse_args()
 
     return (args.endpoint, args.protocol, args.engines_list,
-            args.plugins_list, args.output_dir, args.threads, args.verbose, args.grammar_file
+            args.plugins_list, args.output_dir, args.threads, args.verbose, args.grammar_file ,
+            args.mutants_count
             )

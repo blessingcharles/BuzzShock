@@ -25,14 +25,6 @@ class HttpMutator(Mutator):
         self.mutations_count = random.randint(min_count, max_count)
         self.non_terminals = []
 
-    def __get_nonterminals(self , node : ABNFToken ) -> None:
-        # get all the non terminals to mutate
-        if node.isTerminal:
-            return
-        self.non_terminals.append(node)
-        for child in node.children:
-            self.__get_nonterminals(child)
-
     def mutate(self) -> None:
 
         self.__get_nonterminals(self.root)
@@ -80,10 +72,19 @@ class HttpMutator(Mutator):
         self.__traverseZoombieGene(self.root)
 
         # to interpret unicode sequence like \n\r
-        self.request = self.request.decode()
+        self.request = self.request.decode('unicode-escape')
 
-        host, port, netloc, uri = self.urlParser(self.url)
+        host, _ , _ , uri = self.urlParser(self.url)
+        uri = "/" + uri
         self.__replace_symbols(host, uri)
+
+    def __get_nonterminals(self , node : ABNFToken ) -> None:
+        # get all the non terminals to mutate
+        if node.isTerminal:
+            return
+        self.non_terminals.append(node)
+        for child in node.children:
+            self.__get_nonterminals(child)
 
     def __replace_symbols(self, host: str, uri: str):
         """
