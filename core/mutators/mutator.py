@@ -53,11 +53,39 @@ class Mutator:
         msg = f"delete point mutation :  mutating {cur_val} to {node.children[0].value}"
         self.mutations_info.append(msg)
 
-    def nodeInsert(self, node: ABNFToken , mutant_genes : List[str]):
-        pass
+    def nodeInsert(self,mutant_genes : ABNFToken):
+        """
+            Randomly Inserts a Non terminal node at random position
+        """
 
-    def nodeDelete(self, node: ABNFToken ,  mutant_genes : List[str] ):
-        pass
+        node_to_insert = random.choice(mutant_genes.children)
 
-    def nodeReplace(self, node: ABNFToken ,  mutant_genes : List[str]):
-        pass
+        index = random.randint(0 , len(mutant_genes.children)-1)
+        mutant_genes.children.insert(index , node_to_insert)
+
+        msg = f"Insert gene mutation :  inserting {node_to_insert.value} at index {index}"
+        self.mutations_info.append(msg)
+
+    def nodeDelete(self,mutant_genes : ABNFToken):
+        """
+            Randomly removes a non-terminal token
+            eg : request-line : method SP request-target SP HTTP-version CRLF
+                    After mutation
+                    method SP SP HTTP-version CRLF
+        """
+        node_to_remove = random.choice(mutant_genes.children)
+        
+        msg = f"delete gene mutation :  deleting {node_to_remove.value}"
+        self.mutations_info.append(msg)
+
+        mutant_genes.children.remove(node_to_remove)
+
+    def nodeReplace(self,mutant_genes : ABNFToken):
+
+        node_to_replace = random.choice(mutant_genes.children)
+
+        index = random.randint(0 , len(mutant_genes.children)-1)
+        mutant_genes.children[index] = node_to_replace
+        
+        msg = f"Replace gene mutation :  Replacing {node_to_replace.value} at index {index}"
+        self.mutations_info.append(msg)

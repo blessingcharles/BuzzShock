@@ -2,6 +2,7 @@ from pprint import pprint
 import random
 from typing import Dict, List
 from urllib.parse import urlparse, ParseResult
+from xml.dom import NotFoundErr
 
 from parso import parse
 
@@ -16,7 +17,7 @@ class HttpMutator(Mutator):
 
     def __init__(self, url: str, nodes_to_mutate: Dict[str, str], root: ABNFToken, min_count: int = 1, max_count: int = 3, random_seed: int = 132, verbose: bool = False) -> None:
 
-        super().__init__(root, min_count, max_count, random_seed , verbose=verbose)
+        super().__init__(root, min_count, max_count, random_seed, verbose=verbose)
 
         # random.seed(random_seed)
         self.url = url
@@ -32,14 +33,15 @@ class HttpMutator(Mutator):
 
             self.mutations_count -= 1
 
-            possible_nodes = [
+            possible_nodes : list[ABNFToken] = [
                 node for node in self.non_terminals if node.value in self.nodes_to_mutate]
+
             if not possible_nodes:
                 return
             zoombie_node = random.choice(possible_nodes)
 
             if self.nodes_to_mutate[zoombie_node.value] not in mutationTypes.types:
-                raise(
+                raise NotFoundErr(
                     f"Unrecognizable mutation type {self.nodes_to_mutate[zoombie_node.value]} for node {zoombie_node.value}")
 
             if self.nodes_to_mutate[zoombie_node.value] == mutationTypes.types[0]:
@@ -57,6 +59,7 @@ class HttpMutator(Mutator):
                 # genetic mutation
                 genetic_mutation_variant = random.choice(
                     mutationTypes.geneticMutations)
+
                 self.__getattribute__(genetic_mutation_variant)(zoombie_node)
 
         if self.verbose:
@@ -74,11 +77,11 @@ class HttpMutator(Mutator):
         # to interpret unicode sequence like \n\r
         self.request = self.request.decode('unicode-escape')
 
-        host, _ , _ , uri = self.urlParser(self.url)
+        host, _, _, uri = self.urlParser(self.url)
         uri = "/" + uri
         self.__replace_symbols(host, uri)
 
-    def __get_nonterminals(self , node : ABNFToken ) -> None:
+    def __get_nonterminals(self, node: ABNFToken) -> None:
         # get all the non terminals to mutate
         if node.isTerminal:
             return

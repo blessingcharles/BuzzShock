@@ -60,7 +60,7 @@ class GrammarEngine(CoreEngine):
                 print("-----------------After Mutations ---------------------")
                 m.zoombieToRequest()
                 print(m.request)
-                exec.submit(self.__launch , m.request)
+                # exec.submit(self.__launch , m.request)
 
     def __launch(self , request : str) -> None:
         resp = self.launchCustomPayload(request)
