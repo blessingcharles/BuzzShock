@@ -68,6 +68,12 @@ if __name__ == "__main__":
 
     # mutate the given abnf request
     if grammar_file:
+        grammar_log_file_dir = output_dir + "/grammar-fuzz"
+        dir_create(grammar_log_file_dir)
+        grammar_log_file = grammar_log_file_dir + f"/results-port{str(port)}.txt"
+
         g_engine = GrammarEngine(
-            grammar_file=grammar_file, mutants_count=mutants_count, host=host, port=port, verbose=verbose)
+            grammar_file=grammar_file, mutants_count=mutants_count, host=host, port=port,
+            verbose=verbose, log_file=grammar_log_file)
+
         g_engine.run()

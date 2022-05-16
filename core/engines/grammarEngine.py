@@ -1,11 +1,12 @@
 
 from concurrent.futures import ThreadPoolExecutor
 import copy
+from typing import List
 from config import CONFIG
 from core.engines.coreEngine import CoreEngine
 from core.mutators.httpMutator import HttpMutator
 from core.parsers.abnfParsers import ABNFParser
-
+from utils.logger import Bzlogger
 
 class GrammarEngine(CoreEngine):
     def __init__(self, host: str, port: int, grammar_file: str, mutants_count: int, timeout: int = 5, buffsize: int = 8192,
@@ -42,7 +43,7 @@ class GrammarEngine(CoreEngine):
     def run(self) -> None:
         p = ABNFParser(self.grammar_file)
         p.parse()
-
+        
         if "nodes-to-mutate" not in CONFIG:
             raise KeyError(
                 "Terminal Nodes should be mentioned in the config for mutation")
@@ -51,19 +52,23 @@ class GrammarEngine(CoreEngine):
         url_token = p.getChildren("__URL__")[0]
 
         with ThreadPoolExecutor(max_workers=self.threads) as exec:
-            for _ in range(self.mutants_count):
+            for count in range(self.mutants_count):
                 root_node = copy.deepcopy(p.root)
 
                 m = HttpMutator(url_token.value, nodes_to_mutate,
                                 root_node, verbose=self.verbose)
                 m.mutate()
-                print("-----------------After Mutations ---------------------")
+                # print("-----------------After Mutations ---------------------")
+                # print(m.request)
                 m.zoombieToRequest()
-                print(m.request)
-                # exec.submit(self.__launch , m.request)
+                Bzlogger.crprinter("[+] Request --> " + str(count))
+                exec.submit(self.__launch , m.request , m.mutations_info)
 
-    def __launch(self , request : str) -> None:
+    def __launch(self , request : str , mutation_info : List[str]) -> None:
+
+        info = "\n".join(mutation_info)
+        msg = "<---------\n" + info + "\n\n" + request + "\n\nResponse\n"
+
         resp = self.launchCustomPayload(request)
-        print(resp)
-
-
+        msg = msg + resp.decode() + "-------->"
+        self.logger.logTofile(msg)

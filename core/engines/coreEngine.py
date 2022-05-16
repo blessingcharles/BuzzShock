@@ -47,7 +47,7 @@ class CoreEngine:
         else:
             self.logger = Logger()
 
-    def launchCustomPayload(self, payload_body: str):
+    def launchCustomPayload(self, payload_body: str) -> bytes:
 
         # send the payload body and return the response from the servers
         if self.reuse_socket:
@@ -57,7 +57,7 @@ class CoreEngine:
                 self.host, self.port, self.timeout, self.buffsize, self.is_ssl)
             cur_sock.plug()
 
-        # print("bytes : ", end="")
+        # print("Sending : ", end="")
         # print(payload_body.__str__().encode('utf-8'))
         cur_sock.send(payload_body.__str__().encode('utf-8'))
         response = cur_sock.recv()
