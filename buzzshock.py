@@ -10,6 +10,7 @@ from core.engines.grammarEngine import GrammarEngine
 from core.mutators.httpMutator import HttpMutator
 from core.parsers.abnfParsers import ABNFParser
 from utils.args import buzzShockArgs
+from utils.banner import banner
 from utils.logger import Bzlogger
 from utils.utils import dir_create
 from config import CONFIG
@@ -25,7 +26,7 @@ def getHostPort(protocol: str, endpoint: str):
 if __name__ == "__main__":
 
     endpoint, protocol, engines_list, plugins_list, output_dir, \
-        threads, verbose, grammar_file, mutants_count = buzzShockArgs()
+        threads, verbose, grammar_file, mutants_count , quiet_mode = buzzShockArgs()
 
     if engines_list:
         engines_list = engines_list.split(",")
@@ -41,6 +42,9 @@ if __name__ == "__main__":
 
     output_dir = os.getcwd() + "/" + output_dir
 
+    if not quiet_mode:
+        banner()
+        
     dir_create(output_dir)
     Bzlogger.printer("Output directory : " + output_dir)
     Bzlogger.info("Worker Threads : " + str(threads))

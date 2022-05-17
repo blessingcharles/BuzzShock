@@ -1,6 +1,5 @@
 CONFIG = {
     "sleeping-time": 0,
-    
     "nodes-to-mutate": {
         'method': 'point-mutation',
         'DIGIT': 'point-mutation',
@@ -10,5 +9,4 @@ CONFIG = {
         'HTTP-version': 'genetic-mutation',
         'HTTP-request': 'genetic-mutation',
     }
-
 }

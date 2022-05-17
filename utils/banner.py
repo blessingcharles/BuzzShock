@@ -1,7 +1,7 @@
-from utils.logger import printer
+from utils.logger import Bzlogger, printer
 
 def banner():
-    printer.log('''
+    Bzlogger.printer('''
                     
                              ^_^                      
                             {=.=}   
@@ -9,5 +9,4 @@ def banner():
                         (  /   )    
                         \(_)__))    
                        BUZZ SHOCK
-''',symbol="")
-#banner()
+''')
