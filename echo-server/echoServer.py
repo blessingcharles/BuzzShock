@@ -4,7 +4,7 @@ from click import echo
 
 
 def handle_client(conn : socket.socket):
-    recievied_bytes = conn.recv(100000)
+    recievied_bytes = conn.recv(1000000)
     request = recievied_bytes.decode()
 
     content_len = len(request)
