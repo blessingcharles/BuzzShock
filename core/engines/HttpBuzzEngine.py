@@ -1,3 +1,5 @@
+from asyncio.log import logger
+from distutils import log
 from http.client import HTTPResponse
 from io import BytesIO
 
@@ -80,10 +82,13 @@ class HttpBuzzEngine(CoreEngine):
                     
                     if response.status < 400:
                         self.results[path] = f"Request\n\n{payload}\nResponse\n\n{response.getheaders()}\n\n{response.data}"
-                        self.logger.log("-"*100)
-                        self.logger.log("Success : {path}")
-                        self.logger.log(
-                            f"Response\n\n{self.__extractHeaders(response.getheaders())}\n{response.data}")
+                        if self.verbose:
+                            self.logger.log("-"*100)
+                            self.logger.log("Success : {path}")
+                            self.logger.log(
+                                f"Response\n\n{self.__extractHeaders(response.getheaders())}\n{response.data}")
+                        elif self.logger:
+                            self.logger.logTofile(f"mutationPath: {path}\n\n{payload}\nResponse\n\n{response.getheaders()}\n\n{response.data}")
 
                     sleep(self.sleepingtime)
             except Exception as exp:

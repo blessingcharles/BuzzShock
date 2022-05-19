@@ -1,2 +1,6 @@
 caddy=9001
 nginx=9002
+haproxy=9003
+httpd=9004
+traefik=9005
+apacheTraffic=9006

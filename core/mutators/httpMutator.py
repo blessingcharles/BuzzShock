@@ -69,18 +69,23 @@ class HttpMutator(Mutator):
 
     def zoombieToRequest(self):
 
-        # If a non terminal node expand only to multiple terminal node choose only one terminal
-        self.__manipulateTerminal(self.root)
-        # expand the mutant tree
-        self.__traverseZoombieGene(self.root)
+        try:
+            # If a non terminal node expand only to multiple terminal node choose only one terminal
+            self.__manipulateTerminal(self.root)
+            # expand the mutant tree
+            self.__traverseZoombieGene(self.root)
 
-        # to interpret unicode sequence like \n\r
-        self.request = self.request.decode('unicode-escape')
+            # to interpret unicode sequence like \n\r
+            self.request = self.request.decode('unicode-escape')
 
-        host, _, _, uri = self.urlParser(self.url)
-        uri = "/" + uri
-        self.__replace_symbols(host, uri)
-
+            host, _, _, uri = self.urlParser(self.url)
+            uri = "/" + uri
+            self.__replace_symbols(host, uri)
+        except Exception as e:
+            Bzlogger.error("failed to decode bytes")
+            if self.verbose:
+                Bzlogger.warning(self.request.decode('latin1'))
+                
     def __get_nonterminals(self, node: ABNFToken) -> None:
         # get all the non terminals to mutate
         if node.isTerminal:
