@@ -104,6 +104,9 @@ class Cerberus(CoreEngine):
             output_file = self.output_dir + f"/port{self.port}/" + \
                 f"{engine_name}__port{self.port}.txt"
 
+            Bzlogger.info("Running Engine : " + engine_name)
+            Bzlogger.info("Output file : " + output_file)
+            
             self.lg = Logger(filename=output_file)
             engine_module = discovered_engines[engine_name]
             engine_class = getattr(engine_module, engine_name)

@@ -75,6 +75,8 @@ class HttpBuzzEngine(CoreEngine):
             try:
                 with open(path, "r") as f:
                     payload = f.read()
+                    Bzlogger.crprinter("payload type : " + path)
+                    
                     raw_response_obj = self.launchCustomPayload(
                         payload_body=payload)
                     response = BytesIOSocket.response_from_bytes(

@@ -1,6 +1,7 @@
 import re
 import pandas as pd
 import sys
+from utils.logger import Bzlogger
 
 rx_dict = {
     'first_line': re.compile(r'<---------'),
@@ -29,16 +30,20 @@ def parse_file(filepath):
             tot.append(line)
             key, match = _parse_line(line)
             if key == 'first_line':
-                if status_code < 400:
-                    row = {
-                        'Mutation': muta,
-                        'Status Code': status_code,
-                        'Body': body,
-                        'Full Request': "".join(tot)
-                    }
-                    data.append(row)
-                muta = []
-                tot = []
+                try:
+                    if status_code < 400:
+                        row = {
+                            'Mutation': muta,
+                            'Status Code': status_code,
+                            'Body': body,
+                            'Full Request': "".join(tot)
+                        }
+                        data.append(row)
+                    muta = []
+                    tot = []
+                except Exception as e:
+                    Bzlogger.error(e)
+                    
             if key == 'mutation':
                 mutation = match.group('mutate')
                 muta.append(mutation)

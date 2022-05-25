@@ -15,7 +15,7 @@ import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 
 class server {
-    public static int port = 8001;
+    public static int port = 8005;
     public static String outputFileName = "output.txt";
     public static FileWriter output;
     public static void main(String[] args) {
