@@ -71,9 +71,9 @@ class Bzlogger:
         Bzlogger.print_general(color=colorama.Fore.LIGHTBLUE_EX , tag="" , message=message , *args)
 
     @staticmethod
-    def crprinter(message : str , left_justify : int = 280):
-        message = colorama.Fore.LIGHTCYAN_EX + f"{message}"
+    def crprinter(message : str , left_justify : int = 580):
+        message = colorama.Fore.LIGHTCYAN_EX + f"{message}"+" "*100
 
         message += colorama.Style.RESET_ALL
-        message.ljust(left_justify)
+        message.rjust(left_justify)
         print(message , end="\r")
