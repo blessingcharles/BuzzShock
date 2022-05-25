@@ -35,10 +35,13 @@ def buzzShockArgs() -> tuple:
 
     parser.add_argument("-q", "--quiet-mode", dest="quiet_mode",
                         action="store_true", default=False, help="run the tool in quiet mode")
-                        
+
+    parser.add_argument("-ncv" , "--no-csv-output" ,dest="no_csv" , action="store_true" , default=False , help="set the flag to produce automated csv output")
+
+
     args = parser.parse_args()
 
     return (args.endpoint, args.protocol, args.engines_list,
             args.plugins_list, args.output_dir, args.threads, args.verbose, args.grammar_file,
-            args.mutants_count , args.quiet_mode
+            args.mutants_count , args.quiet_mode , args.no_csv
             )

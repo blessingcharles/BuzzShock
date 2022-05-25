@@ -12,7 +12,7 @@ from utils.logger import Bzlogger
 class GrammarEngine(CoreEngine):
     def __init__(self, host: str, port: int, grammar_file: str, mutants_count: int, timeout: int = 5, buffsize: int = 8192,
                  reuse_socket: bool = False, is_ssl: bool = False, sleepingtime: int = 0.5, threads : int = 8 ,
-                 log_file: str = None, verbose: bool = False) -> None:
+                 log_file: str = None, verbose: bool = False , no_csv: bool = False) -> None:
         """
 
 
@@ -39,6 +39,7 @@ class GrammarEngine(CoreEngine):
         self.grammar_file = grammar_file
         self.mutants_count = mutants_count
         self.threads = threads
+        self.no_csv = no_csv
         self.verbose = verbose
 
     def run(self) -> None:
@@ -68,9 +69,10 @@ class GrammarEngine(CoreEngine):
 
         self.logger.close()
 
-        # conver the output text file into csv using outputHttpParsers  
-        output_file = self.log_file[:-3] + "csv"
-        outputHttpParser.parse(self.log_file, output_file)
+        if not self.no_csv :
+            # conver the output text file into csv using outputHttpParsers  
+            output_file = self.log_file[:-3] + "csv"
+            outputHttpParser.parse(self.log_file, output_file)
 
     def __launch(self , request : str , mutation_info : List[str]) -> None:
 

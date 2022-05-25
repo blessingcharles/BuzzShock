@@ -7,9 +7,9 @@ def handle_client(conn : socket.socket):
     recievied_bytes = conn.recv(1000000)
     request = recievied_bytes.decode()
 
-    content_len = len(request)
+    content_len = len(request) + len("Body ")
     # log the request to a file
-    response = f"HTTP/1.1 200 OK\r\nContent-Length: {content_len}\r\nConnection: close\r\n\r\n{request}"
+    response = f"HTTP/1.1 200 OK\r\nContent-Length: {content_len}\r\nConnection: close\r\n\r\nBody {request}"
     conn.sendall(response.encode())
 
 def run_server(port: int = 5000 , threads : int = 28):

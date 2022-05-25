@@ -1,12 +1,12 @@
 import re
 import pandas as pd
 import sys
-from utils.logger import Bzlogger
+# from utils.logger import Bzlogger 
 
 rx_dict = {
     'first_line': re.compile(r'<---------'),
     'mutation': re.compile(r'(?P<mutate>(.*)mutation(.*))'),
-    'status_code': re.compile(r'[^!\s]+\s(?P<status>\d\d\d)\s'),
+    'status_code': re.compile(r'HTTP\/\d\.\d\s(?P<status>\d\d\d)\s'),
     'body1': re.compile(r'(?P<body>Body.*)(-------->)'),
     'body2': re.compile(r'(?P<body>Body.*)')
 }
@@ -42,7 +42,8 @@ def parse_file(filepath):
                     muta = []
                     tot = []
                 except Exception as e:
-                    Bzlogger.error(e)
+                    pass
+                    # Bzlogger.error(e)
                     
             if key == 'mutation':
                 mutation = match.group('mutate')

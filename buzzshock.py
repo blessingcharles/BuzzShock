@@ -25,7 +25,8 @@ def getHostPort(protocol: str, endpoint: str):
 if __name__ == "__main__":
 
     endpoint, protocol, engines_list, plugins_list, output_dir, \
-        threads, verbose, grammar_file, mutants_count , quiet_mode = buzzShockArgs()
+        threads, verbose, grammar_file, mutants_count, quiet_mode, \
+        no_csv = buzzShockArgs()
 
     if engines_list:
         engines_list = engines_list.split(",")
@@ -43,7 +44,7 @@ if __name__ == "__main__":
 
     if not quiet_mode:
         banner()
-        
+
     dir_create(output_dir)
     Bzlogger.printer("Output directory : " + output_dir)
     Bzlogger.info("Worker Threads : " + str(threads))
@@ -63,7 +64,7 @@ if __name__ == "__main__":
     if plugins_list or engines_list:
         # Running the plugins and engines
         cb = Cerberus(protocol=protocol, host=host, port=port, output_dir=output_dir, endpoint=endpoint,
-                      engines_list=engines_list, plugins_list=plugins_list, threads=threads, verbose=verbose)
+                      engines_list=engines_list, plugins_list=plugins_list, threads=threads, verbose=verbose, no_csv=no_csv)
 
         cb.run()
 
@@ -73,10 +74,11 @@ if __name__ == "__main__":
     if grammar_file:
         grammar_log_file_dir = output_dir + "/grammar-fuzz"
         dir_create(grammar_log_file_dir)
-        grammar_log_file = grammar_log_file_dir + f"/results-port{str(port)}.txt"
+        grammar_log_file = grammar_log_file_dir + \
+            f"/results-port{str(port)}.txt"
 
         g_engine = GrammarEngine(
             grammar_file=grammar_file, mutants_count=mutants_count, host=host, port=port,
-            verbose=verbose, log_file=grammar_log_file)
+            verbose=verbose, log_file=grammar_log_file , no_csv=no_csv)
 
         g_engine.run()

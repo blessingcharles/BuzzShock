@@ -70,7 +70,7 @@ class server {
             OutputStream os = exchange.getResponseBody();
             os.write(response_content.getBytes());
             os.close();
-            System.out.println(log_content);
+            // System.out.println(log_content);
             
             //log file
             output.write(log_content);

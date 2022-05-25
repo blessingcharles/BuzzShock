@@ -34,7 +34,7 @@ class BytesIOSocket:
 class HttpBuzzEngine(CoreEngine):
     def __init__(self, host: str, port: int, timeout: int = 5, buffsize: int = 8192,
                  reuse_socket: bool = False, is_ssl: bool = False, sleepingtime: int = 0.5,
-                 log_file: str = None, verbose: bool = False) -> None:
+                 log_file: str = None, verbose: bool = False , no_csv : bool = False) -> None:
         """
             Http text based protocol fuzz engine
 
@@ -59,6 +59,7 @@ class HttpBuzzEngine(CoreEngine):
                          timeout=timeout, buffsize=buffsize, sleepingtime=sleepingtime, log_file=log_file)
 
         self.verbose = verbose
+        self.no_csv = no_csv
 
     def launch_from_db(self, db_path: str = "db/http", testing_server_name: str = None) -> Dict[str, str]:
 
@@ -99,9 +100,10 @@ class HttpBuzzEngine(CoreEngine):
         
         self.logger.close()
 
-        # conver the output text file into csv using outputHttpParsers  
-        output_file = self.log_file[:-3] + "csv"
-        outputHttpParser.parse(self.log_file, output_file)
+        if not self.no_csv :
+            # conver the output text file into csv using outputHttpParsers  
+            output_file = self.log_file[:-3] + "csv"
+            outputHttpParser.parse(self.log_file, output_file)
     
     def __extractHeaders(self, headerDict):
         obj = ""

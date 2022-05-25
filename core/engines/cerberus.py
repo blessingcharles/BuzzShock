@@ -17,7 +17,7 @@ class Cerberus(CoreEngine):
     def __init__(self, protocol: str, host: str, port: int, output_dir: str, threads: int, endpoint: str = "",
                  engines_list: list = [], plugins_list=[], gadgets_dict: dict = None,
                  verbose: bool = False, timeout: int = 5, buffsize: int = 8192, reuse_socket: bool = False, is_ssl: bool = False,
-                 sleepingtime: int = 0.1, log_file: str = None) -> None:
+                 sleepingtime: int = 0.1, log_file: str = None , no_csv : bool = False) -> None:
         """
             Steering to run various plugins and engines to fuzz protocols
 
@@ -56,6 +56,7 @@ class Cerberus(CoreEngine):
         self.plugins_list = plugins_list
         self.gadget_dict = gadgets_dict
 
+        self.no_csv = no_csv
         self.output_dir = output_dir
         self.verbose = verbose
 
@@ -89,6 +90,9 @@ class Cerberus(CoreEngine):
 
             self.lg.close()
 
+            if self.no_csv:
+                continue
+
             # conver the output text file into csv using outputHttpParsers  
             input_file = output_file
             output_file = output_file[:-3] + "csv"
@@ -116,7 +120,7 @@ class Cerberus(CoreEngine):
                 reuse_socket=self.reuse_socket, is_ssl=self.is_ssl,
                 timeout=self.timeout, buffsize=self.buffsize, 
                 sleepingtime=self.sleepingtime, log_file=output_file ,
-                verbose=self.verbose
+                verbose=self.verbose , no_csv = self.no_csv
             )
 
             engine.launch_from_db()
