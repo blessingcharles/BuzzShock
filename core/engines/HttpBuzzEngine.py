@@ -88,14 +88,16 @@ class HttpBuzzEngine(CoreEngine):
                             self.logger.log(
                                 f"Response\n\n{self.__extractHeaders(response.getheaders())}\n{response.data}")
                         elif self.logger:
-                            self.logger.logTofile(f"mutationPath: {path}\n\n{payload}\nResponse\n\n{response.getheaders()}\n\n{response.data}")
+                            self.logger.logTofile(f"<---------\nmutationPath: {path}\n\n{str(payload)}\nResponse:\n{raw_response_obj.decode()}\n-------->")
 
                     sleep(self.sleepingtime)
             except Exception as exp:
                 print(f"[-] {path}", exp)
 
     def __extractHeaders(self, headerDict):
-        obj = {}
+        obj = ""
         for key, value in headerDict.items():
-            obj[key] = value
+            obj += key 
+            obj += ": "
+            obj += value + "\n"
         return obj

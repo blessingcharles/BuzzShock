@@ -1,6 +1,5 @@
 import copy
 import os
-from tabnanny import verbose
 from time import sleep
 from urllib.parse import urlparse
 

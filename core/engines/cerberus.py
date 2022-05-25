@@ -92,8 +92,10 @@ class Cerberus(CoreEngine):
 
             dir_create(self.output_dir + f"/port{self.port}")
 
-            output_file = self.output_dir + f"/port{self.port}" + \
+            output_file = self.output_dir + f"/port{self.port}/" + \
                 f"{engine_name}__port{self.port}.txt"
+
+            print(output_file)
 
             self.lg = Logger(filename=output_file)
             engine_module = discovered_engines[engine_name]
@@ -103,7 +105,7 @@ class Cerberus(CoreEngine):
                 host=self.host, port=self.port,
                 reuse_socket=self.reuse_socket, is_ssl=self.is_ssl,
                 timeout=self.timeout, buffsize=self.buffsize, 
-                sleepingtime=self.sleepingtime, log_file=self.log_file ,
+                sleepingtime=self.sleepingtime, log_file=output_file ,
                 verbose=self.verbose
             )
 
