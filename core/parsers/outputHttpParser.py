@@ -6,7 +6,8 @@ rx_dict = {
     'first_line': re.compile(r'<---------'),
     'mutation': re.compile(r'(?P<mutate>(.*)mutation(.*))'),
     'status_code': re.compile(r'[^!\s]+\s(?P<status>\d\d\d)\s'),
-    'body': re.compile(r'(?P<body>Body.*)(-------->)')
+    'body1': re.compile(r'(?P<body>Body.*)(-------->)'),
+    'body2': re.compile(r'(?P<body>Body.*)')
 }
 
 def _parse_line(line):
@@ -17,7 +18,7 @@ def _parse_line(line):
     return None, None
 
 def parse_file(filepath):
-        
+    
     data = []
     muta = []
     tot = []
@@ -46,9 +47,11 @@ def parse_file(filepath):
                 status_code = match.group('status')
                 status_code = int(status_code)
 #                 print(status_code)
-            if key == 'body':
+            if key == 'body1':
                 body = match.group('body')
 #                 print(body)
+            if key == 'body2':
+                body = match.group('body')
             line = file_object.readline()
         return data
 
