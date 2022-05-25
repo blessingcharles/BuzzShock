@@ -88,7 +88,7 @@ class HttpBuzzEngine(CoreEngine):
                             self.logger.log(
                                 f"Response\n\n{self.__extractHeaders(response.getheaders())}\n{response.data}")
                         elif self.logger:
-                            self.logger.logTofile(f"<---------\nmutationPath: {path}\n\n{str(payload)}\nResponse:\n{raw_response_obj.decode()}\n-------->")
+                            self.logger.logTofile(f"<---------\nmutationPath: {path}\n\n{str(payload)}\nResponse\n\n{raw_response_obj.decode()}-------->")
 
                     sleep(self.sleepingtime)
             except Exception as exp:

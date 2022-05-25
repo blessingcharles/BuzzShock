@@ -128,7 +128,7 @@ class Cerberus(CoreEngine):
             Bzlogger.crprinter("payload type : " + key)
 
         self.lg.logTofile(
-            f"<---------\nmutationPayloadType : {key}\n\n{str(value)}\nResponse:\n{result.decode()}\n-------->")
+            f"<---------\nmutationPayloadType : {key}\n\n{str(value)}\nResponse\n{result.decode()}\n-------->")
 
     def __extractHeaders(self, headerDict):
         obj = {}
