@@ -82,7 +82,7 @@ class HttpMutator(Mutator):
             uri = "/" + uri
             self.__replace_symbols(host, uri)
         except Exception as e:
-            Bzlogger.error("failed to decode bytes")
+            Bzlogger.error("failed to decode bytes : " + str(e))
             if self.verbose:
                 Bzlogger.warning(self.request.decode('latin1'))
                 

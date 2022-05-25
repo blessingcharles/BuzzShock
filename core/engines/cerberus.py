@@ -7,6 +7,8 @@ from requests import request
 from core.engines import discovered_engines, discovered_plugins
 from core.engines.coreEngine import CoreEngine
 from core.engines.HttpBuzzEngine import BytesIOSocket
+from core.parsers import outputHttpParser
+
 from utils.logger import Bzlogger, Logger
 from utils.utils import dir_create
 
@@ -85,6 +87,13 @@ class Cerberus(CoreEngine):
                 for key, value in payload_set.items():
                     exec.submit(self.__buzz_jobs, key, value)
 
+            self.lg.close()
+
+            # conver the output text file into csv using outputHttpParsers  
+            input_file = output_file
+            output_file = output_file[:-3] + "csv"
+            outputHttpParser.parse(input_file, output_file)
+            
             Bzlogger.success(f"{plugin_name} Finished")
 
         # run the given engines
@@ -94,8 +103,6 @@ class Cerberus(CoreEngine):
 
             output_file = self.output_dir + f"/port{self.port}/" + \
                 f"{engine_name}__port{self.port}.txt"
-
-            print(output_file)
 
             self.lg = Logger(filename=output_file)
             engine_module = discovered_engines[engine_name]
@@ -110,7 +117,7 @@ class Cerberus(CoreEngine):
             )
 
             engine.launch_from_db()
-
+    
     def __buzz_jobs(self, key, value):
 
         sleep(self.sleepingtime)
@@ -128,7 +135,7 @@ class Cerberus(CoreEngine):
             Bzlogger.crprinter("payload type : " + key)
 
         self.lg.logTofile(
-            f"<---------\nmutationPayloadType : {key}\n\n{str(value)}\nResponse\n{result.decode()}\n-------->")
+            f"<---------\nmutationPayloadType : {key}\n\n{str(value)}\nResponse\n{result.decode()}-------->")
 
     def __extractHeaders(self, headerDict):
         obj = {}

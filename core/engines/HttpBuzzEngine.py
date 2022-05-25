@@ -10,8 +10,8 @@ from time import sleep
 from typing import Dict
 import urllib3
 from core.engines.coreEngine import CoreEngine
-from core.engines.shockerSocket import ShockerSocket
-from utils.logger import Logger
+from core.parsers import outputHttpParser
+from utils.logger import Bzlogger
 
 
 class BytesIOSocket:
@@ -34,7 +34,7 @@ class BytesIOSocket:
 class HttpBuzzEngine(CoreEngine):
     def __init__(self, host: str, port: int, timeout: int = 5, buffsize: int = 8192,
                  reuse_socket: bool = False, is_ssl: bool = False, sleepingtime: int = 0.5,
-                 log_file: str = None , verbose : bool = False) -> None:
+                 log_file: str = None, verbose: bool = False) -> None:
         """
             Http text based protocol fuzz engine
 
@@ -56,7 +56,7 @@ class HttpBuzzEngine(CoreEngine):
         """
 
         super().__init__(host=host, port=port, reuse_socket=reuse_socket, is_ssl=is_ssl,
-                         timeout=timeout, buffsize=buffsize, sleepingtime=sleepingtime , log_file=log_file)
+                         timeout=timeout, buffsize=buffsize, sleepingtime=sleepingtime, log_file=log_file)
 
         self.verbose = verbose
 
@@ -75,11 +75,11 @@ class HttpBuzzEngine(CoreEngine):
             try:
                 with open(path, "r") as f:
                     payload = f.read()
-                    raw_response_obj = self.launchCustomPayload(payload_body=payload)
+                    raw_response_obj = self.launchCustomPayload(
+                        payload_body=payload)
                     response = BytesIOSocket.response_from_bytes(
                         raw_response_obj)
 
-                    
                     if response.status < 400:
                         self.results[path] = f"Request\n\n{payload}\nResponse\n\n{response.getheaders()}\n\n{response.data}"
                         if self.verbose:
@@ -88,16 +88,23 @@ class HttpBuzzEngine(CoreEngine):
                             self.logger.log(
                                 f"Response\n\n{self.__extractHeaders(response.getheaders())}\n{response.data}")
                         elif self.logger:
-                            self.logger.logTofile(f"<---------\nmutationPath: {path}\n\n{str(payload)}\nResponse\n\n{raw_response_obj.decode()}-------->")
+                            self.logger.logTofile(
+                                f"<---------\nmutationPath: {path}\n\n{str(payload)}\nResponse\n\n{raw_response_obj.decode()}-------->")
 
                     sleep(self.sleepingtime)
             except Exception as exp:
-                print(f"[-] {path}", exp)
+                Bzlogger.error(f"{path} "+ str(exp))
+        
+        self.logger.close()
 
+        # conver the output text file into csv using outputHttpParsers  
+        output_file = self.log_file[:-3] + "csv"
+        outputHttpParser.parse(self.log_file, output_file)
+    
     def __extractHeaders(self, headerDict):
         obj = ""
         for key, value in headerDict.items():
-            obj += key 
+            obj += key
             obj += ": "
             obj += value + "\n"
         return obj

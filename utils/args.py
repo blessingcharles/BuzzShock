@@ -35,6 +35,7 @@ def buzzShockArgs() -> tuple:
 
     parser.add_argument("-q", "--quiet-mode", dest="quiet_mode",
                         action="store_true", default=False, help="run the tool in quiet mode")
+                        
     args = parser.parse_args()
 
     return (args.endpoint, args.protocol, args.engines_list,

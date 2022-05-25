@@ -5,6 +5,7 @@ from typing import List
 from config import CONFIG
 from core.engines.coreEngine import CoreEngine
 from core.mutators.httpMutator import HttpMutator
+from core.parsers import outputHttpParser
 from core.parsers.abnfParsers import ABNFParser
 from utils.logger import Bzlogger
 
@@ -63,6 +64,13 @@ class GrammarEngine(CoreEngine):
                 m.zoombieToRequest()
                 Bzlogger.crprinter("[+] Request --> " + str(count))
                 exec.submit(self.__launch , m.request , m.mutations_info)
+
+
+        self.logger.close()
+
+        # conver the output text file into csv using outputHttpParsers  
+        output_file = self.log_file[:-3] + "csv"
+        outputHttpParser.parse(self.log_file, output_file)
 
     def __launch(self , request : str , mutation_info : List[str]) -> None:
 

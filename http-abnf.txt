@@ -27,4 +27,4 @@ CRLF = "\r\n"
 
 headers = "Host: __HOST__\r\nConnection: close\r\nX-UNIQUE-ID: __BUZZ_ID__\r\n"
 message-body = "__STANDARD_BODY__"                     ; buzz shock random text inputter
-__URL__ = "http://example.com/foo/bar?q=1"
+__URL__ = "http://localhost/"

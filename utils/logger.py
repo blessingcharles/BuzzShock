@@ -33,6 +33,9 @@ class Logger:
         msg = f"{colorama.Fore.GREEN}({t}){colorama.Style.RESET_ALL} {msg}"
         self.log(msg,symbol)
 
+    def close(self):
+        self.filehandler.close()
+        
 # general logger
 printer = Logger()
 
