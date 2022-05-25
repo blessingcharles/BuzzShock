@@ -1,4 +1,9 @@
 FROM node
-WORKDIR /app
-COPY app.js ./
-CMD ["node" , "app.js"]
+
+# Create app directory
+WORKDIR /usr/src/app
+
+# Bundle app source
+COPY . .
+EXPOSE 80
+CMD [ "node", "app.js" ]

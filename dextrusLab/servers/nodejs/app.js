@@ -1,4 +1,3 @@
-const res = require("express/lib/response");
 const http = require("http");
 const fs = require("fs")
 
@@ -6,7 +5,7 @@ const fs = require("fs")
 
 let request_count = 0 ;
 
-console.log("server started at 8080");
+console.log("server started at 80");
 http.createServer((request, response) => {
 
     let body = [];
