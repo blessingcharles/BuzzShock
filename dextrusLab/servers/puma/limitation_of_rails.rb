@@ -1,5 +1,3 @@
-# https://longliveruby.com/articles/rails-request-cycle
-# https://github.com/rack/rack/blob/master/SPEC.rdoc
 class ImitationOfRails
     def call(env)
         # puts(env)
