@@ -13,13 +13,13 @@ def buzzShockArgs() -> tuple:
         description="Buzz Shocker - Protocol Analyzer")
 
     parser.add_argument("-e", "--endpoint", dest="endpoint",
-                        help="provide the endpoint for the protocol", required=True)
+                        help="provide the endpoint uri", required=True)
     parser.add_argument("-pt", "--protocol", dest="protocol",
-                        help="provide the endpoint for the protocol", required=True)
+                        help="provide the protocol to fuzz", required=True)
     parser.add_argument("-el", "--engines-list",
-                        dest="engines_list", help="engines-list", nargs="?")
+                        dest="engines_list", help="engines list to be used seperated by comma", nargs="?")
     parser.add_argument("-pl", "--plugins-list",
-                        dest="plugins_list", help="plugins list", nargs="?")
+                        dest="plugins_list", help="plugins list to be used seperated by commas", nargs="?")
     parser.add_argument("-v", "--verbose", action="store_true",
                         dest="verbose", help="set verbose level", default=False)
     parser.add_argument("-od", "--output-dir", dest="output_dir",
