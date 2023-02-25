@@ -96,7 +96,7 @@ class ABNFParser:
 
         while d:
             cur_node: ABNFToken = d.popleft()
-            print("[+] Exploring -------> ", cur_node)
+            print("[+]", cur_node)
 
             for neigh_node in cur_node.children:
                 if neigh_node not in alread_visited:

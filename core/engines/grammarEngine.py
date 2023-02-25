@@ -52,6 +52,8 @@ class GrammarEngine(CoreEngine):
 
         nodes_to_mutate = CONFIG["nodes-to-mutate"]
         url_token = p.getChildren("__URL__")[0]
+        
+        print(p.printTreeBFS(p.root))
 
         with ThreadPoolExecutor(max_workers=self.threads) as exec:
             for count in range(self.mutants_count):

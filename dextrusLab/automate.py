@@ -44,9 +44,9 @@ if __name__ == "__main__":
 
     if sys.argv[1] == 'start':
         for container_name , port in servers_container.items():
-            print("Starting : " , container_name , " port: " , str(port))
-            client.containers.run(container_name ,ports={ '80/tcp':port } , name=container_name )
-
+            print("Starting : " , container_name , " port: " , str(port) , end="   ") 
+            client.containers.run(ports={ '80/tcp':port } , name=container_name , image=container_name )
+            print("Started")
     if sys.argv[1] == "stop":
         containers_list = client.containers.list()
         for container in containers_list:
