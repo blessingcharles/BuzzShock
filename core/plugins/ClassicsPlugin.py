@@ -15,7 +15,7 @@ class ClassicsPlugin:
         self.verbose = verbose
 
     def generate(self) -> "dict[str, HttpRequestPrototype]":
-        self.__classics_req()
+        self.classics_req()
         return self.mutants_list
 
     def httpTemplate(self, te_name: str = None, te_value: str = None,
@@ -45,12 +45,21 @@ class ClassicsPlugin:
         mutant.body = http_body
         return mutant
 
-    def __classics_req(self):
+    def classics_req(self):
 
 
         self.mutants_list["classics-clte"] = self.httpTemplate(te_name="Transfer-Encoding" ,
                                                                te_value="chunked" ,
                                                                mutation_type="classics-clte")
+        
+        self.mutants_list["normal-req"] = self.httpTemplate(te_name="Transfer-Encoding" ,
+                                                               te_value="chunked" ,
+                                                               cl_name="Content-Length" ,
+                                                               cl_value=5,
+                                                               mutation_type="normal-req" ,
+                                                               http_body="0\r\n\r\n"
+                                                            )
+        
         self.mutants_list["classics-tecl"] = self.httpTemplate(te_name="Transfer-Encoding" , 
                                                                te_value="chunked" ,
                                                                cl_name="Content-Length" ,
