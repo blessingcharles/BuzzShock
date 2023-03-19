@@ -13,7 +13,7 @@ from utils.banner import banner
 from utils.logger import Bzlogger
 from utils.utils import dir_create
 from config import CONFIG
-
+from utils.enum import BuzzEnum
 
 def getHostPort(protocol: str, endpoint: str):
     if protocol == "http" or protocol == "https":
@@ -59,8 +59,11 @@ if __name__ == "__main__":
             Bzlogger.printer("File Exists")
         Bzlogger.info("Mutants Count: " + str(mutants_count))
 
+    # initial enum
+    Bzlogger.warning(f"Host : {host}")
+    BuzzEnum(host)
     sleep(CONFIG['sleeping-time'])
-
+    
     if plugins_list or engines_list:
         # Running the plugins and engines
         cb = Cerberus(protocol=protocol, host=host, port=port, output_dir=output_dir, endpoint=endpoint,
