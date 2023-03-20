@@ -1,6 +1,6 @@
 from asyncio.log import logger
 from distutils import log
-from http.client import HTTPResponse
+from http.client import HTTPResponse, IncompleteRead
 from io import BytesIO
 
 import os
@@ -23,18 +23,20 @@ class BytesIOSocket:
 
     @classmethod
     def response_from_bytes(cls, data):
-        sock = BytesIOSocket(data)
+        try:
+            sock = BytesIOSocket(data)
+            response = HTTPResponse(sock)
+            response.begin()
 
-        response = HTTPResponse(sock)
-        response.begin()
-
-        return urllib3.HTTPResponse.from_httplib(response)
+            return urllib3.HTTPResponse.from_httplib(response)
+        except Exception as e:
+            return response
 
 
 class HttpBuzzEngine(CoreEngine):
     def __init__(self, host: str, port: int, timeout: int = 5, buffsize: int = 8192,
                  reuse_socket: bool = False, is_ssl: bool = False, sleepingtime: int = 0.5,
-                 log_file: str = None, verbose: bool = False , no_csv : bool = False) -> None:
+                 log_file: str = None, verbose: bool = False, no_csv: bool = False) -> None:
         """
             Http text based protocol fuzz engine
 
@@ -77,7 +79,7 @@ class HttpBuzzEngine(CoreEngine):
                 with open(path, "r") as f:
                     payload = f.read()
                     Bzlogger.crprinter("payload type : " + path)
-                    
+
                     raw_response_obj = self.launchCustomPayload(
                         payload_body=payload)
                     response = BytesIOSocket.response_from_bytes(
@@ -96,15 +98,15 @@ class HttpBuzzEngine(CoreEngine):
 
                     sleep(self.sleepingtime)
             except Exception as exp:
-                Bzlogger.error(f"{path} "+ str(exp))
-        
+                Bzlogger.error(f"{path} " + str(exp))
+
         self.logger.close()
 
-        if not self.no_csv :
-            # conver the output text file into csv using outputHttpParsers  
+        if not self.no_csv:
+            # conver the output text file into csv using outputHttpParsers
             output_file = self.log_file[:-3] + "csv"
             outputHttpParser.parse(self.log_file, output_file)
-    
+
     def __extractHeaders(self, headerDict):
         obj = ""
         for key, value in headerDict.items():

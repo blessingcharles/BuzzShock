@@ -4,9 +4,9 @@ from core.types.httpBuzzTokens import DefaultGadgets, MandatoryGadgetTokens, Gad
 
 
 class HttpRequestPrototype:
-    def __init__(self, gadgets: None, method: str = "GET", request_target: str = "/",
+    def __init__(self, gadgets: None, method: str = "POST", request_target: str = "/",
                  http_version: str = "1.1", add_default_cl: bool = True,
-                 http_name: str = "HTTP" , after_header_colon : str = " ") -> None:
+                 http_name: str = "HTTP", after_header_colon: str = " ") -> None:
         """
             A class used to generate Http Request by manipulating various fuzzing places
             ...

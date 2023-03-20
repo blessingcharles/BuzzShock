@@ -36,11 +36,10 @@ class CoreEngine:
         self.buffsize = buffsize
         self.sleepingtime = sleepingtime
         self.log_file = log_file
-        
-        if self.reuse_socket:
-            self.sock = ShockerSocket(
-                host, port, timeout, buffsize, is_ssl)
-            self.sock.plug()
+
+        self.sock = ShockerSocket(
+            host, port, timeout, buffsize, is_ssl)
+        self.sock.plug()
 
         if log_file:
             self.logger = Logger(filename=log_file)
@@ -50,13 +49,13 @@ class CoreEngine:
     def launchCustomPayload(self, payload_body: str) -> bytes:
 
         # send the payload body and return the response from the servers
-        if self.reuse_socket:
-            cur_sock = self.sock
-        else:
-            cur_sock = ShockerSocket(
+        if not self.reuse_socket:
+            self.sock.__exit__()
+            self.sock = ShockerSocket(
                 self.host, self.port, self.timeout, self.buffsize, self.is_ssl)
-            cur_sock.plug()
+            self.sock.plug()
 
+        cur_sock = self.sock
         # print("Sending : ", end="")
         # print(payload_body.__str__().encode('utf-8'))
         cur_sock.send(payload_body.__str__().encode('utf-8'))

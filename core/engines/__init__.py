@@ -17,4 +17,3 @@ discovered_plugins = {
     name: importlib.import_module(f"core.plugins.{name}") for finder, name, ispkg in pkgutil.iter_modules(["core/plugins"])
     if name.endswith("Plugin")
 }
-

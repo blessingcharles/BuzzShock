@@ -7,7 +7,8 @@ from core.types.httpRequestPrototype import HttpRequestPrototype
 
 class HttpLaxTePlugin:
 
-    def __init__(self, endpoint: str = "", gadget_dict: dict = None, verbose: bool = False) -> None:
+    def __init__(self, endpoint: str = "", gadget_dict: dict = None, verbose: bool = False,
+                 heuruster_body: str = None, heuruster_headers=None) -> None:
         """
             Fuzz For Lax Transfer Encoding Header Parsing
 
@@ -24,12 +25,15 @@ class HttpLaxTePlugin:
         self.gadget_dict: dict[str, str] = gadget_dict
         self.mutants_list: dict[str, HttpRequestPrototype] = {}
         self.verbose = verbose
+        self.heuruster_body = heuruster_body
+        self.heuruster_headers = heuruster_headers
 
     def generate(self) -> "dict[str, HttpRequestPrototype]":
 
         self.__normal_req()
         self.__case_collapser()
         self.__bad_chunksize()
+        self.__more_transfer_codings()
 
         # # Random shocking characters insertion
         self.__point_mutation()
@@ -39,12 +43,21 @@ class HttpLaxTePlugin:
         return self.mutants_list
 
     def httpTemplate(self, tecl_name: str = None, tecl_value: str = None, http_body: str = "2\r\nyy\r\n0\r\n\r\nX",
-                     add_content_lenght: bool = True, mutation_type: str = None) -> HttpRequestPrototype:
+                     add_content_lenght: bool = True, mutation_type: str = None, own_headers=None) -> HttpRequestPrototype:
+
+        # it will be taken care by heuruster
+        if self.heuruster_headers is not None:
+            add_content_lenght = False
 
         mutant = HttpRequestPrototype(
             self.gadget_dict, add_default_cl=add_content_lenght)
         mutant.addHeader("Host", self.host)
         mutant.addHeader("Connection", "Close")
+
+        if own_headers:
+            for key, value in own_headers.items():
+                mutant.addHeader(key, value)
+
         # mutant.addHeader(
         #     "User-Agent", "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:98.0) Gecko/20100101 Firefox/98.0")
         # mutant.addHeader(
@@ -55,7 +68,16 @@ class HttpLaxTePlugin:
         if tecl_name and tecl_name:
             mutant.addHeader(tecl_name, tecl_value)
 
-        mutant.body = http_body
+        if self.heuruster_body:
+            mutant.body = self.heuruster_body
+        else:
+            mutant.body = http_body
+
+        # Add Cl based on the attack for heuristics
+        if self.heuruster_headers is not None:
+            for key, value in self.heuruster_headers.items():
+                mutant.addHeader(key, value)
+
         return mutant
 
     def __case_collapser(self):
@@ -79,21 +101,21 @@ class HttpLaxTePlugin:
         self.mutants_list["wcl-key-case-collapse"] = self.httpTemplate(
             "TransFer-EncoDing", "chunked",
             mutation_type="wcl-key-case-collapse",
-            http_body="2\r\nyy\r\n0",
+            http_body="2\r\nyy\r\n0\r\n",
             add_content_lenght=False
         )
 
         self.mutants_list["wcl-value-case-collapse"] = self.httpTemplate(
             "Transfer-Encoding", "cHunKed",
             mutation_type="wclvalue-case-collapse",
-            http_body="2\r\nyy\r\n0",
+            http_body="2\r\nyy\r\n0\r\n\r\n",
             add_content_lenght=False
         )
 
         self.mutants_list["wcl-key-value-case-collapse"] = self.httpTemplate(
             "TransFer-EncoDing", "cHunKed",
             mutation_type="wcl-key-value-case-collapse",
-            http_body="2\r\nyy\r\n0",
+            http_body="2\r\nyy\r\n0\r\n\r\n",
             add_content_lenght=False
         )
 
@@ -132,14 +154,14 @@ class HttpLaxTePlugin:
 
     def __more_transfer_codings(self):
 
-        self.mutants_list["mult-enc"] = self.httpTemplate(
-            tecl_name="Transfer-Encoding", tecl_value="gzip , chunked",
-            mutation_type="mult-enc",
-            add_content_lenght=False,
+        self.mutants_list["1-correct-1-random-te"] = self.httpTemplate(
+            tecl_name="Transfer-Encoding", tecl_value="chunked",
+            mutation_type="mult-enc", own_headers={"Transfer-Encoding": "unknown"}
         )
 
-        self.mutants_list["mult-enc-trans-ext"] = self.httpTemplate(
-            tecl_name="Transfer-Encoding" , tecl_value="gzip , chunked ; token=randchar"
+        self.mutants_list["1-correct-1-casecolapse-te"] = self.httpTemplate(
+            tecl_name="Transfer-Encoding", tecl_value="chunked",
+            mutation_type="mult-enc", own_headers={"Transfer-Encoding": "ChunkeD"}
         )
 
     def __normal_req(self):
@@ -181,25 +203,25 @@ class HttpLaxTePlugin:
             self.mutants_list["wcl-point-key-start-%02x" % shockers] = self.httpTemplate(
                 "%cTransfer-Encoding" % shockers, "chunked",
                 mutation_type="wcl-point-key-start-%02x" % shockers,
-                http_body="2\r\nyy\r\n0",
+                http_body="2\r\nyy\r\n0\r\n\r\n",
                 add_content_lenght=False)
 
             self.mutants_list["wcl-point-key-end-%02x" % shockers] = self.httpTemplate(
                 "Transfer-Encoding%c" % shockers, "chunked",
                 mutation_type="wcl-point-key-end-%02x" % shockers,
-                http_body="2\r\nyy\r\n0",
+                http_body="2\r\nyy\r\n0\r\n\r\n",
                 add_content_lenght=False)
 
             self.mutants_list["wcl-point-value-start-%02x" % shockers] = self.httpTemplate(
                 "Transfer-Encoding", "%cchunked" % shockers,
                 mutation_type="wcl-point-value-start-%02x" % shockers,
-                http_body="2\r\nyy\r\n0",
+                http_body="2\r\nyy\r\n0\r\n\r\n",
                 add_content_lenght=False)
 
             self.mutants_list["wcl-point-value-end-%02x" % shockers] = self.httpTemplate(
                 "Transfer-Encoding", "chunked%c" % shockers,
                 mutation_type="wcl-point-value-end-%02x" % shockers,
-                http_body="2\r\nyy\r\n0",
+                http_body="2\r\nyy\r\n0\r\n\r\n",
                 add_content_lenght=False)
 
     def __double_point_mutation(self):
@@ -229,26 +251,26 @@ class HttpLaxTePlugin:
             self.mutants_list["wcl-double-start-start-%02x" % shockers] = self.httpTemplate(
                 "%cTransfer-Encoding" % shockers, "%cchunked" % shockers,
                 mutation_type="wcl-double-start-start-%02x" % shockers,
-                http_body="2\r\nyy\r\n0",
+                http_body="2\r\nyy\r\n0\r\n\r\n",
                 add_content_lenght=False)
 
             self.mutants_list["wcl-double-end-end-%02x" % shockers] = self.httpTemplate(
                 "Transfer-Encoding%c" % shockers, "chunked%c" % shockers,
                 mutation_type="wcl-double-end-end-%02x" % shockers,
-                http_body="2\r\nyy\r\n0",
+                http_body="2\r\nyy\r\n0\r\n\r\n",
                 add_content_lenght=False
             )
 
             self.mutants_list["wcl-double-start-end-%02x" % shockers] = self.httpTemplate(
                 "%cTransfer-Encoding" % shockers, "chunked%c" % shockers,
                 mutation_type="wcl-double-start-end-%02x" % shockers,
-                http_body="2\r\nyy\r\n0",
+                http_body="2\r\nyy\r\n0\r\n\r\n",
                 add_content_lenght=False)
 
             self.mutants_list["wcl-double-end-start-%02x" % shockers] = self.httpTemplate(
                 "%cTransfer-Encoding" % shockers, "%cchunked" % shockers,
                 mutation_type="wcl-double-end-start-%02x",
-                http_body="2\r\nyy\r\n0",
+                http_body="2\r\nyy\r\n0\r\n\r\n",
                 add_content_lenght=False
             )
 
@@ -297,7 +319,7 @@ class HttpLaxTePlugin:
             self.mutants_list["wcl-X-preheaders-end-%02x" % shockers] = self.httpTemplate(
                 "X: X%cTransfer-Encoding" % shockers, "chunked",
                 mutation_type="wcl-X-preheaders-end-%02x" % shockers,
-                http_body="2\r\nyy\r\n0",
+                http_body="2\r\nyy\r\n0\r\n\r\n",
                 add_content_lenght=False
             )
 
@@ -305,42 +327,42 @@ class HttpLaxTePlugin:
                 "X:%cX%cTransfer-Encoding" % (shockers, shockers), "chunked",
                 mutation_type="wcl-X-preheaders-start-%02x-end-%02x" % (
                     shockers, shockers),
-                http_body="2\r\nyy\r\n0",
+                http_body="2\r\nyy\r\n0\r\n\r\n",
                 add_content_lenght=False
             )
 
             self.mutants_list["wcl-X-preheaders-after-colon-with-%02x" % shockers] = self.httpTemplate(
                 "X:%cTransfer-Encoding" % shockers, "chunked",
                 mutation_type="wcl-X-preheaders-after-colon-with-%02x" % shockers,
-                http_body="2\r\nyy\r\n0",
+                http_body="2\r\nyy\r\n0\r\n\r\n",
                 add_content_lenght=False
             )
 
             self.mutants_list["wcl-X-preheaders-end-cr-%02x" % shockers] = self.httpTemplate(
                 "X: X\r%cTransfer-Encoding" % shockers, "chunked",
                 mutation_type="wcl-X-preheaders-end-cr-%02x" % shockers,
-                http_body="2\r\nyy\r\n0",
+                http_body="2\r\nyy\r\n0\r\n\r\n",
                 add_content_lenght=False
             )
 
             self.mutants_list["wcl-X-preheaders-end-lf-%02x" % shockers] = self.httpTemplate(
                 "X: X\n%cTransfer-Encoding" % shockers, "chunked",
                 mutation_type="wcl-X-preheaders-end-lf-%02x" % shockers,
-                http_body="2\r\nyy\r\n0",
+                http_body="2\r\nyy\r\n0\r\n\r\n",
                 add_content_lenght=False
             )
 
             self.mutants_list["wcl-X-preheaders-%02x-end-lf" % shockers] = self.httpTemplate(
                 "X: X%c\nTransfer-Encoding" % shockers, "chunked",
                 mutation_type="wcl-X-preheaders-%02x-end-lf" % shockers,
-                http_body="2\r\nyy\r\n0",
+                http_body="2\r\nyy\r\n0\r\n\r\n",
                 add_content_lenght=False
             )
 
             self.mutants_list["wcl-X-preheaders-%02x-end-cr" % shockers] = self.httpTemplate(
                 "X: X%c\rTransfer-Encoding" % shockers, "chunked",
                 mutation_type="wcl-X-preheaders-%02x-end-cr" % shockers,
-                http_body="2\r\nyy\r\n0",
+                http_body="2\r\nyy\r\n0\r\n\r\n",
                 add_content_lenght=False
             )
 

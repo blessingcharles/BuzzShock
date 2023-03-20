@@ -37,11 +37,12 @@ def buzzShockArgs() -> tuple:
                         action="store_true", default=False, help="run the tool in quiet mode")
 
     parser.add_argument("-ncv" , "--no-csv-output" ,dest="no_csv" , action="store_true" , default=False , help="set the flag to produce automated csv output")
+    parser.add_argument("-het" , "--heuristic-tester" ,dest="heuristic_tester" , action="store_true" , default=False , help="set the flag for heuristic testing")
 
 
     args = parser.parse_args()
 
     return (args.endpoint, args.protocol, args.engines_list,
             args.plugins_list, args.output_dir, args.threads, args.verbose, args.grammar_file,
-            args.mutants_count , args.quiet_mode , args.no_csv
+            args.mutants_count , args.quiet_mode , args.no_csv , args.heuristic_tester
             )

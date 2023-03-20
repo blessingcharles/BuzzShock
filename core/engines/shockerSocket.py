@@ -6,9 +6,9 @@ import ssl
 
 class ShockerSocket:
     def __init__(self, host: str, port: int = 80, timeout: int = 5,
-                buffsize: int = 4096, is_ssl: bool = False) -> None:
+                 buffsize: int = 8096, is_ssl: bool = False) -> None:
         """
-            A simple pluggable socket for buzz shock 
+            A simple pluggable socket for buzz shock
 
             Attributes
             -------------
@@ -20,13 +20,13 @@ class ShockerSocket:
 
             Method
             -----------
-            plug: 
+            plug:
                 connecting the socket
             send:
                 sending the payload
             recv:
                 receive atmost buffsize
-        
+
         """
         self.host = host
         self.port = port
@@ -53,17 +53,30 @@ class ShockerSocket:
             self._sock.settimeout(self.timeout)
             self._sock.connect((self.host, self.port))
 
-    def send(self , data : bytes):
+    def send(self, data: bytes):
         if self.is_ssl:
             return self._sslsock.send(data)
-        else :
+        else:
             return self._sock.sendall(data)
 
+    def recvall(self, sock):
+        data = b''
+        while True:
+            part = sock.recv(self.buffsize)
+            data += part
+            if len(part) < self.buffsize:
+                # either 0 or end of data
+                break
+        return data
+
     def recv(self):
-        if self.is_ssl:
-            return self._sslsock.recv(self.buffsize)
-        else:
-            return self._sock.recv(self.buffsize)
+        try:
+            if self.is_ssl:
+                return self.recvall(self._sslsock)
+            else:
+                return self.recvall(self._sock)
+        except Exception as e:
+            return b""
 
     def __exit__(self):
         if self.is_ssl:

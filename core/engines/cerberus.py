@@ -17,7 +17,7 @@ class Cerberus(CoreEngine):
     def __init__(self, protocol: str, host: str, port: int, output_dir: str, threads: int, endpoint: str = "",
                  engines_list: list = [], plugins_list=[], gadgets_dict: dict = None,
                  verbose: bool = False, timeout: int = 5, buffsize: int = 8192, reuse_socket: bool = False, is_ssl: bool = False,
-                 sleepingtime: int = 0.1, log_file: str = None , no_csv : bool = False) -> None:
+                 sleepingtime: int = 0.1, log_file: str = None, no_csv: bool = False) -> None:
         """
             Steering to run various plugins and engines to fuzz protocols
 
@@ -93,11 +93,11 @@ class Cerberus(CoreEngine):
             if self.no_csv:
                 continue
 
-            # conver the output text file into csv using outputHttpParsers  
+            # conver the output text file into csv using outputHttpParsers
             input_file = output_file
             output_file = output_file[:-3] + "csv"
             outputHttpParser.parse(input_file, output_file)
-            
+
             Bzlogger.success(f"{plugin_name} Finished")
 
         # run the given engines
@@ -110,7 +110,7 @@ class Cerberus(CoreEngine):
 
             Bzlogger.info("Running Engine : " + engine_name)
             Bzlogger.info("Output file : " + output_file)
-            
+
             self.lg = Logger(filename=output_file)
             engine_module = discovered_engines[engine_name]
             engine_class = getattr(engine_module, engine_name)
@@ -118,13 +118,13 @@ class Cerberus(CoreEngine):
             engine = engine_class(
                 host=self.host, port=self.port,
                 reuse_socket=self.reuse_socket, is_ssl=self.is_ssl,
-                timeout=self.timeout, buffsize=self.buffsize, 
-                sleepingtime=self.sleepingtime, log_file=output_file ,
-                verbose=self.verbose , no_csv = self.no_csv
+                timeout=self.timeout, buffsize=self.buffsize,
+                sleepingtime=self.sleepingtime, log_file=output_file,
+                verbose=self.verbose, no_csv=self.no_csv
             )
 
             engine.launch_from_db()
-    
+
     def __buzz_jobs(self, key, value):
 
         sleep(self.sleepingtime)

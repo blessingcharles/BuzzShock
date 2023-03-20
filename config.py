@@ -1,5 +1,5 @@
 CONFIG = {
-    "sleeping-time": 2,
+    "sleeping-time": 0,
     "nodes-to-mutate": {
         'method': 'point-mutation',
         'DIGIT': 'point-mutation',
